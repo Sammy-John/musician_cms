@@ -1,10 +1,10 @@
 import React from "react";
+import News from "../components/News";
 
 const Home = () => {
   return (
     <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the starting point of the website.</p>
+      <News />
     </div>
   );
 };
