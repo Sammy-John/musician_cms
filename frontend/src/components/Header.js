@@ -24,6 +24,9 @@ export const Header = () => {
         <nav style={{ flex: 2, textAlign: "center" }}>
           <Link to="/" style={{ margin: "0 10px" }}>Home</Link>
         </nav>
+        <nav style={{ flex: 2, textAlign: "center" }}>
+          <Link to="/NewsPage" style={{ margin: "0 10px" }}>News</Link>
+        </nav>
 
         {/* Right Column: Empty */}
         <div style={{ flex: 1 }}></div>

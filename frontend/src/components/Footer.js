@@ -1,6 +1,6 @@
 import React from "react";
 
-const Footer = () => {
+export const Footer = () => {
   return (
     <footer style={{ padding: "10px 20px", borderTop: "1px solid #ccc", textAlign: "center", fontSize: "14px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
