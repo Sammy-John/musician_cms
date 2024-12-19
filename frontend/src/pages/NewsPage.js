@@ -3,7 +3,7 @@ import NewsList from "../components/NewsList";
 
 const NewsPage = () => {
   return (
-    <div>
+    <div>  
       <NewsList />
     </div>
   );

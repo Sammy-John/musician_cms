@@ -73,6 +73,7 @@ const NewsList = () => {
 
   return (
     <div style={{ padding: "20px" }}>
+        <h1>News</h1>
       {/* Render Current Posts */}
       {currentPosts.map((post) => (
         <div

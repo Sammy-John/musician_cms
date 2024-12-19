@@ -4,6 +4,9 @@ import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import Home from "./pages/Home";
 import NewsPage from "./pages/NewsPage";
+import Videos from "./components/Videos";
+import Images from "./components/Images";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   return (
@@ -13,6 +16,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/NewsPage" element={<NewsPage />} />
+          <Route path="/Videos" element={<Videos />} />
+          <Route path="/Images" element={<Images />} />
+          <Route path="/ContactPage" element={<ContactPage />} />
         </Routes>
         <Footer />
       </div>

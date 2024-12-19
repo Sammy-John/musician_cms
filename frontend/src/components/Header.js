@@ -27,7 +27,15 @@ export const Header = () => {
         <nav style={{ flex: 2, textAlign: "center" }}>
           <Link to="/NewsPage" style={{ margin: "0 10px" }}>News</Link>
         </nav>
-
+        <nav style={{ flex: 2, textAlign: "center" }}>
+          <Link to="/Videos" style={{ margin: "0 10px" }}>Videos</Link>
+        </nav>
+        <nav style={{ flex: 2, textAlign: "center" }}>
+          <Link to="/Images" style={{ margin: "0 10px" }}>Images</Link>
+        </nav>
+        <nav style={{ flex: 2, textAlign: "center" }}>
+          <Link to="/ContactPage" style={{ margin: "0 10px" }}>Contact</Link>
+        </nav>
         {/* Right Column: Empty */}
         <div style={{ flex: 1 }}></div>
       </div>
