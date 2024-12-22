@@ -1,4 +1,4 @@
-const exprees = require ("express");
+const express = require ("express");
 const router = express.Router();
 
 // Mock Data for Videos
@@ -31,4 +31,3 @@ router.get("/:id", (req, res) => {
   });
 
   module.exports = router;
-  
