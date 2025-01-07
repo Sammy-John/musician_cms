@@ -5,6 +5,36 @@ const { User } = require("../models");
 const authenticateToken = require("../middleware/authMiddleware");
 const router = express.Router();
 
+
+// Login Route
+router.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+  
+    if (!username || !password) {
+      return res.status(400).json({ message: "Username and password are required" });
+    }
+  
+    try {
+      const user = await User.findOne({ where: { username } });
+      if (!user) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+  
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+  
+      const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  
+      res.json({ token });
+    } catch (error) {
+      console.error("Error logging in:", error.message);
+      res.status(500).json({ message: "Internal server error", error });
+    }
+  });
+  
+
 // Change Username
 router.put("/change-username", authenticateToken, async (req, res) => {
   const { newUsername, password } = req.body;
