@@ -1,87 +1,90 @@
 const express = require("express");
 const router = express.Router();
-
-// Mock Data for Posts
-const mockPosts = [
-    {
-        id: 1,
-        title: "Post 1",
-        content: "This is content for post 1",
-        type: "regular",
-        createdAt: "2024-12-15",
-    },
-    {
-        id: 2,
-        title: "Post 2",
-        content: "This is content for post 2",
-        type: "video",
-        createdAt: "2024-12-12",
-    },
-];
+const { Post } = require("../models");
 
 // Get All Posts
-router.get("/", (req, res) => {
-    res.json(mockPosts);
+router.get("/", async (req, res) => {
+  try {
+    const posts = await Post.findAll();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 });
 
 // Get a Single Post by ID
-router.get("/:id", (req, res) => {
-    const post = mockPosts.find((p) => p.id === parseInt(req.params.id));
+router.get("/:id", async (req, res) => {
+  try {
+    const post = await Post.findByPk(req.params.id);
     if (post) {
-        res.json(post);
+      res.json(post);
     } else {
-        res.status(404).json({ message: "Post not Found" });
+      res.status(404).json({ message: "Post not found" });
     }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 });
 
 // Add a New Post
-router.post("/", (req, res) => {
-    const { title, content, type } = req.body;
+router.post("/", async (req, res) => {
+  const { title, description, type, status } = req.body;
 
-    if (!title || !content || !type) {
-        return res.status(400).json({ message: "Title, content, and type are required" });
-    }
+  if (!title || !type || !status) {
+    return res.status(400).json({ message: "Title, type, and status are required" });
+  }
 
-    const newPost = {
-        id: mockPosts.length + 1,
-        title,
-        content,
-        type,
-        createdAt: new Date().toISOString().split("T")[0],
-    };
-
-    mockPosts.push(newPost);
+  try {
+    const newPost = await Post.create({
+      title,
+      description,
+      type,
+      status,
+    });
     res.status(201).json(newPost);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 });
 
 // Update an Existing Post
-router.put("/:id", (req, res) => {
-    const { id } = req.params;
-    const { title, content, type } = req.body;
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { title, description, type, status } = req.body;
 
-    const post = mockPosts.find((p) => p.id === parseInt(id));
+  try {
+    const post = await Post.findByPk(id);
     if (!post) {
-        return res.status(404).json({ message: "Post not found" });
+      return res.status(404).json({ message: "Post not found" });
     }
 
     post.title = title || post.title;
-    post.content = content || post.content;
+    post.description = description || post.description;
     post.type = type || post.type;
+    post.status = status || post.status;
 
+    await post.save();
     res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 });
 
 // Delete a Post
-router.delete("/:id", (req, res) => {
-    const { id } = req.params;
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
 
-    const postIndex = mockPosts.findIndex((p) => p.id === parseInt(id));
-    if (postIndex === -1) {
-        return res.status(404).json({ message: "Post not found" });
+  try {
+    const post = await Post.findByPk(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
     }
 
-    mockPosts.splice(postIndex, 1);
+    await post.destroy();
     res.json({ message: "Post deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 });
 
 module.exports = router;
