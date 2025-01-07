@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const authenticateToken = require("./middleware/authMiddleware");
 
 
 // Import Routes
@@ -21,12 +22,12 @@ app.use(cors()); // Allow cross-origin requests
 // Public Routes
 app.use("/api/auth", authRoutes); // Mount the auth route
 
-// Other Routes (no authentication middleware yet)
-app.use("/api/posts", postRoutes);
-app.use("/api/gigs", gigRoutes);
-app.use("/api/images", imageRoutes);
-app.use("/api/videos", videoRoutes);
-app.use("/api/contact", contactRoutes);
+// Protected Routes
+app.use("/api/posts", authenticateToken, postRoutes);
+app.use("/api/gigs", authenticateToken, gigRoutes);
+app.use("/api/images", authenticateToken, imageRoutes);
+app.use("/api/videos", authenticateToken, videoRoutes);
+app.use("/api/contact", authenticateToken, contactRoutes);
 
 // Base Route
 app.get("/", (req, res) => {
