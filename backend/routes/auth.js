@@ -1,45 +1,95 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { User } = require("../models");
+const authenticateToken = require("../middleware/authMiddleware");
 const router = express.Router();
 
-// Mock user for testing
-const mockUser = {
-  username: "admin",
-  password: "$2b$10$/e0UpZwEABedjm0ObrXLn.8ZyfcCjK1bPXso6kqUw7x7VlYJ2JEPK", // bcrypt hash for "password123"
-};
+// Change Username
+router.put("/change-username", authenticateToken, async (req, res) => {
+  const { newUsername, password } = req.body;
 
-// Login Route
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  console.log("Request username:", username);
-  console.log("Request password:", password);
-
-  // Validate username
-  if (username !== mockUser.username) {
-    console.log("Username does not match mock user.");
-    return res.status(401).json({ message: "Invalid username or password" });
+  if (!newUsername || !password) {
+    return res.status(400).json({ message: "New username and password are required" });
   }
 
-  // Validate password
-  const isPasswordValid = await bcrypt.compare(password, mockUser.password);
-  console.log("Is password valid:", isPasswordValid);
-  if (!isPasswordValid) {
-    return res.status(401).json({ message: "Invalid username or password" });
-  }
-
-  // Generate a JWT token
   try {
-    const token = jwt.sign(
-      { username: mockUser.username },
-      process.env.JWT_SECRET, // Ensure this is set in your .env file
-      { expiresIn: "1h" }
-    );
-    res.json({ token }); // Send the token back to the client
+    const user = await User.findOne({ where: { username: req.user.username } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    user.username = newUsername;
+    await user.save();
+
+    res.json({ message: "Username updated successfully" });
   } catch (error) {
-    console.error("Error generating token:", error.message);
-    res.status(500).json({ message: "Internal server error" }); // Graceful error response
+    console.error("Error updating username:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+
+// Change Email
+router.put("/change-email", authenticateToken, async (req, res) => {
+  const { newEmail, password } = req.body;
+
+  if (!newEmail || !password) {
+    return res.status(400).json({ message: "New email and password are required" });
+  }
+
+  try {
+    const user = await User.findOne({ where: { username: req.user.username } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    user.email = newEmail;
+    await user.save();
+
+    res.json({ message: "Email updated successfully" });
+  } catch (error) {
+    console.error("Error updating email:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+
+// Change Password
+router.put("/change-password", authenticateToken, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ message: "Current password and new password are required" });
+  }
+
+  try {
+    const user = await User.findOne({ where: { username: req.user.username } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid current password" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
   }
 });
 
