@@ -44,6 +44,33 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Update an Image
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { url, type } = req.body;
+
+    if (!url || !type) {
+      return res.status(400).json({ message: "URL and type are required" });
+    }
+
+    const image = await Image.findByPk(id);
+    if (!image) {
+      return res.status(404).json({ message: "Image not found" });
+    }
+
+    image.url = url;
+    image.type = type;
+    await image.save();
+
+    res.json(image); // Return the updated image
+  } catch (error) {
+    console.error("Error updating image:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+
+
 // Delete an Image
 router.delete("/:id", async (req, res) => {
   try {
