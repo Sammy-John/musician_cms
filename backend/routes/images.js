@@ -1,72 +1,63 @@
 const express = require("express");
+const { Image } = require("../models");
 const router = express.Router();
 
-// Mock Data for Images
-const mockImages = [
-    { id: 1, url: "https://via.placeholder.com/150", type: "image"},
-    { id: 2, url: "https://via.placeholder.com/300", type: "feature-image"},
-];
-
 // Get all Images
-router.get("/", (req, res) => {
-    res.json(mockImages);
+router.get("/", async (req, res) => {
+  try {
+    const images = await Image.findAll();
+    res.json(images);
+  } catch (error) {
+    console.error("Error fetching images:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
 });
 
 // Get a Single Image by ID
-router.get("/:id", (req, res) => {
-    const image = mockImages.find((i) => i.id === parseInt(req.params.id));
-    if (image) {
-        res.json(image);
-    } else {
-        res.status(404).json({ message: "Image not found" });
-    }
-});
-
-// Add a New Image
-router.post("/", (req, res) => {
-    const { url, type } = req.body;
-
-    if (!url || !type) {
-        return res.status(400).json({ message: "Both URL and type are required" });
-    }
-
-    const newImage = {
-        id: mockImages.length + 1,
-        url,
-        type,
-    };
-
-    mockImages.push(newImage);
-    res.status(201).json(newImage);
-});
-
-// Update an Existing Image
-router.put("/:id", (req, res) => {
-    const { id } = req.params;
-    const { url, type } = req.body;
-
-    const image = mockImages.find((i) => i.id === parseInt(id));
+router.get("/:id", async (req, res) => {
+  try {
+    const image = await Image.findByPk(req.params.id);
     if (!image) {
-        return res.status(404).json({ message: "Image not found" });
+      return res.status(404).json({ message: "Image not found" });
     }
-
-    image.url = url || image.url;
-    image.type = type || image.type;
-
     res.json(image);
+  } catch (error) {
+    console.error("Error fetching image:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+
+// Create a New Image
+router.post("/", async (req, res) => {
+  const { url, type } = req.body;
+
+  if (!url || !type) {
+    return res.status(400).json({ message: "URL and type are required" });
+  }
+
+  try {
+    const newImage = await Image.create({ url, type });
+    res.status(201).json(newImage);
+  } catch (error) {
+    console.error("Error creating image:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
 });
 
 // Delete an Image
-router.delete("/:id", (req, res) => {
-    const { id } = req.params;
-
-    const imageIndex = mockImages.findIndex((i) => i.id === parseInt(id));
-    if (imageIndex === -1) {
-        return res.status(404).json({ message: "Image not found" });
+router.delete("/:id", async (req, res) => {
+  try {
+    const image = await Image.findByPk(req.params.id);
+    if (!image) {
+      return res.status(404).json({ message: "Image not found" });
     }
 
-    mockImages.splice(imageIndex, 1);
+    await image.destroy();
     res.json({ message: "Image deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting image:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
 });
 
 module.exports = router;

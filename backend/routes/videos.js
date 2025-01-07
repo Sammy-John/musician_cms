@@ -1,80 +1,63 @@
-const express = require("express");
+const express = require('express');
+const { Video } = require('../models');
 const router = express.Router();
 
-// Mock Data for Videos
-const mockVideos = [
-    {
-        id: 1,
-        url: "https://www.facebook.com/facebook/videos/10153231379946729/",
-        title: "Sample Video 1",
-    },
-    {
-        id: 2,
-        url: "https://www.facebook.com/facebook/videos/10153231379946729/",
-        title: "Sample Video 2",
-    },
-];
-
-// Get All Videos
-router.get("/", (req, res) => {
-    res.json(mockVideos);
+// Get all Videos
+router.get('/', async (req, res) => {
+  try {
+    const videos = await Video.findAll();
+    res.json(videos);
+  } catch (error) {
+    console.error('Error fetching videos:', error.message);
+    res.status(500).json({ message: 'Internal server error', error });
+  }
 });
 
 // Get a Single Video by ID
-router.get("/:id", (req, res) => {
-    const video = mockVideos.find((v) => v.id === parseInt(req.params.id));
-    if (video) {
-        res.json(video);
-    } else {
-        res.status(404).json({ message: "Video not found" });
-    }
-});
-
-// Add a New Video
-router.post("/", (req, res) => {
-    const { url, title } = req.body;
-
-    if (!url || !title) {
-        return res.status(400).json({ message: "Both URL and title are required" });
-    }
-
-    const newVideo = {
-        id: mockVideos.length + 1,
-        url,
-        title,
-    };
-
-    mockVideos.push(newVideo);
-    res.status(201).json(newVideo);
-});
-
-// Update an Existing Video
-router.put("/:id", (req, res) => {
-    const { id } = req.params;
-    const { url, title } = req.body;
-
-    const video = mockVideos.find((v) => v.id === parseInt(id));
+router.get('/:id', async (req, res) => {
+  try {
+    const video = await Video.findByPk(req.params.id);
     if (!video) {
-        return res.status(404).json({ message: "Video not found" });
+      return res.status(404).json({ message: 'Video not found' });
     }
-
-    video.url = url || video.url;
-    video.title = title || video.title;
-
     res.json(video);
+  } catch (error) {
+    console.error('Error fetching video:', error.message);
+    res.status(500).json({ message: 'Internal server error', error });
+  }
+});
+
+// Create a New Video
+router.post('/', async (req, res) => {
+  const { url, title } = req.body;
+
+  if (!url || !title) {
+    return res.status(400).json({ message: 'URL and title are required' });
+  }
+
+  try {
+    const newVideo = await Video.create({ url, title });
+    res.status(201).json(newVideo);
+  } catch (error) {
+    console.error('Error creating video:', error.message);
+    res.status(500).json({ message: 'Internal server error', error });
+  }
 });
 
 // Delete a Video
-router.delete("/:id", (req, res) => {
-    const { id } = req.params;
-
-    const videoIndex = mockVideos.findIndex((v) => v.id === parseInt(id));
-    if (videoIndex === -1) {
-        return res.status(404).json({ message: "Video not found" });
+router.delete('/:id', async (req, res) => {
+  try {
+    const video = await Video.findByPk(req.params.id);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
     }
 
-    mockVideos.splice(videoIndex, 1);
-    res.json({ message: "Video deleted successfully" });
+    await video.destroy();
+    res.json({ message: 'Video deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting video:', error.message);
+    res.status(500).json({ message: 'Internal server error', error });
+  }
 });
 
 module.exports = router;
