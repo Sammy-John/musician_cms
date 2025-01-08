@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,8 +20,9 @@ const Login = () => {
 
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem("token", data.token); // Save token
-        navigate("/cms/dashboard"); // Navigate to the dashboard
+        localStorage.setItem("token", data.token);
+        setIsLoggedIn(true); // Update App state
+        navigate("/cms/pages/dashboard"); // Redirect to dashboard
       } else {
         setError(data.message || "Login failed");
       }

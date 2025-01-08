@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css"; // Tailwind CSS or your global styles
 import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

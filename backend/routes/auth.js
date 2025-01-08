@@ -5,35 +5,57 @@ const { User } = require("../models");
 const authenticateToken = require("../middleware/authMiddleware");
 const router = express.Router();
 
-
 // Login Route
 router.post("/login", async (req, res) => {
-    const { username, password } = req.body;
-  
-    if (!username || !password) {
-      return res.status(400).json({ message: "Username and password are required" });
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
+  }
+
+  try {
+    const user = await User.findOne({ where: { username } });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid username or password" });
     }
-  
-    try {
-      const user = await User.findOne({ where: { username } });
-      if (!user) {
-        return res.status(401).json({ message: "Invalid username or password" });
-      }
-  
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: "Invalid username or password" });
-      }
-  
-      const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: "1h" });
-  
-      res.json({ token });
-    } catch (error) {
-      console.error("Error logging in:", error.message);
-      res.status(500).json({ message: "Internal server error", error });
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid username or password" });
     }
-  });
-  
+
+    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+    res.json({ token });
+  } catch (error) {
+    console.error("Error logging in:", error.message);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+
+// Validate Token Route
+router.get("/validate", async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ where: { username: decoded.username } });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
+    res.status(200).json({ message: "Token is valid" });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+});
 
 // Change Username
 router.put("/change-username", authenticateToken, async (req, res) => {
