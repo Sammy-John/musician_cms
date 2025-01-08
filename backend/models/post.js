@@ -14,9 +14,18 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      title: DataTypes.STRING,
-      description: DataTypes.TEXT,
-      type: DataTypes.ENUM('regular', 'video', 'image', 'gig'),
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false, // Ensure title is required
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: true, // Description is optional
+      },
+      type: {
+        type: DataTypes.ENUM('regular', 'video', 'image', 'gig'),
+        allowNull: false, // Type is required
+      },
       status: {
         type: DataTypes.ENUM('draft', 'published'),
         defaultValue: 'draft',
@@ -25,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Post',
+      tableName: 'posts', // Explicit table name
       timestamps: true, // Enable createdAt and updatedAt
     }
   );

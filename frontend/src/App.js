@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import NewsPage from "./pages/NewsPage";
+import FullPost from "./components/FullPost";
 import Login from "./cms/Login";
 import CMSLayout from "./cms/CMSLayout";
 import Dashboard from "./cms/pages/Dashboard";
@@ -8,8 +11,18 @@ import Gigs from "./cms/Gigs";
 import Images from "./cms/Images";
 import Videos from "./cms/Videos";
 import Contact from "./cms/Contact";
-import './cms/global.css';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
+function PublicLayout({ children }) {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
+}
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -63,7 +76,33 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Login Route */}
+        {/* Public Routes */}
+        <Route
+          path="/"
+          element={
+            <PublicLayout>
+              <Home />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/news"
+          element={
+            <PublicLayout>
+              <NewsPage />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/news/:id"
+          element={
+            <PublicLayout>
+              <FullPost />
+            </PublicLayout>
+          }
+        />
+
+        {/* Login Route */}
         <Route path="/cms/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
 
         {/* Protected CMS Routes */}

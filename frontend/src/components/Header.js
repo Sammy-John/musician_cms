@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
 
 export const Header = () => {
   return (
@@ -9,13 +11,13 @@ export const Header = () => {
         {/* Left Column: Social Media Icons */}
         <div style={{ flex: 1, display: "flex", gap: "10px" }}>
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-            <FontAwesomeIcon icon={["fab", "facebook"]} size="2x" />
+            <FontAwesomeIcon icon={faFacebook} size="2x" />
           </a>
           <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-            <FontAwesomeIcon icon={["fab", "twitter"]} size="2x" />
+            <FontAwesomeIcon icon={faTwitter} size="2x" />
           </a>
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <FontAwesomeIcon icon={["fab", "instagram"]} size="2x" />
+            <FontAwesomeIcon icon={faInstagram} size="2x" />
           </a>
         </div>
 
@@ -41,3 +43,5 @@ export const Header = () => {
     </header>
   );
 };
+
+export default Header;
