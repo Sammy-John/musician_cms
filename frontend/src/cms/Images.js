@@ -83,81 +83,133 @@ const Images = () => {
   };
 
   return (
-    <div>
-      <h1>Images Management</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="container mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Image Management</h1>
+        {error && (
+          <p className="text-red-500 bg-red-100 p-3 rounded-lg">{error}</p>
+        )}
 
-      {/* List Images */}
-      <ul>
-        {images.map((image) => (
-          <li key={image.id}>
-            {editingImage === image.id ? (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const url = e.target.url.value;
-                  const type = e.target.type.value;
-                  if (url && type) {
-                    updateImage(image.id, { url, type });
-                  }
-                }}
-              >
-                <input
-                  type="url"
-                  name="url"
-                  defaultValue={image.url}
-                  placeholder="Image URL"
-                  required
-                />
-                <select name="type" defaultValue={image.type} required>
-                  <option value="image">Image</option>
-                  <option value="feature-image">Feature Image</option>
-                </select>
-                <button type="submit">Save</button>
-                <button
-                  type="button"
-                  onClick={() => setEditingImage(null)}
+        {/* List Images */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {images.map((image) => (
+            <div
+              key={image.id}
+              className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center"
+            >
+              {editingImage === image.id ? (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const url = e.target.url.value;
+                    const type = e.target.type.value;
+                    if (url && type) {
+                      updateImage(image.id, { url, type });
+                    }
+                  }}
+                  className="w-full"
                 >
-                  Cancel
-                </button>
-              </form>
-            ) : (
-              <>
-                <img
-                  src={image.url}
-                  alt="Preview"
-                  style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                />
-                <p>Type: {image.type}</p>
-                <button onClick={() => setEditingImage(image.id)}>Edit</button>
-                <button onClick={() => deleteImage(image.id)}>Delete</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+                  <input
+                    type="url"
+                    name="url"
+                    defaultValue={image.url}
+                    placeholder="Image URL"
+                    className="w-full border border-gray-300 p-2 rounded-md mb-2"
+                    required
+                  />
+                  <select
+                    name="type"
+                    defaultValue={image.type}
+                    className="w-full border border-gray-300 p-2 rounded-md mb-2"
+                    required
+                  >
+                    <option value="image">Image</option>
+                    <option value="feature-image">Feature Image</option>
+                  </select>
+                  <div className="flex space-x-4">
+                    <button
+                      type="submit"
+                      className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingImage(null)}
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  <img
+                    src={image.url}
+                    alt="Preview"
+                    className="w-full h-48 object-cover rounded-md mb-2"
+                  />
+                  <p className="text-gray-600 mb-2">Type: {image.type}</p>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => setEditingImage(image.id)}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteImage(image.id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
 
-      {/* Add New Image */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const url = e.target.url.value;
-          const type = e.target.type.value;
-          if (url && type) {
-            createImage({ url, type });
-            e.target.reset();
-          }
-        }}
-      >
-        <h2>Add New Image</h2>
-        <input type="url" name="url" placeholder="Image URL" required />
-        <select name="type" required>
-          <option value="">Select Type</option>
-          <option value="image">Image</option>
-          <option value="feature-image">Feature Image</option>
-        </select>
-        <button type="submit">Add Image</button>
-      </form>
+        {/* Add New Image */}
+        <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Add New Image</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const url = e.target.url.value;
+              const type = e.target.type.value;
+              if (url && type) {
+                createImage({ url, type });
+                e.target.reset();
+              }
+            }}
+            className="space-y-4"
+          >
+            <input
+              type="url"
+              name="url"
+              placeholder="Image URL"
+              className="w-full border border-gray-300 p-2 rounded-md"
+              required
+            />
+            <select
+              name="type"
+              className="w-full border border-gray-300 p-2 rounded-md"
+              required
+            >
+              <option value="">Select Type</option>
+              <option value="image">Image</option>
+              <option value="feature-image">Feature Image</option>
+            </select>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            >
+              Add Image
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

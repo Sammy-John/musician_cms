@@ -8,6 +8,8 @@ import Gigs from "./cms/Gigs";
 import Images from "./cms/Images";
 import Videos from "./cms/Videos";
 import Contact from "./cms/Contact";
+import './cms/global.css';
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

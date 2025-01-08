@@ -77,87 +77,171 @@ const Posts = () => {
   };
 
   return (
-    <div>
-      <h1>Posts Management</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="container mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Posts Management</h1>
+        {error && (
+          <p className="text-red-500 bg-red-100 p-3 rounded-lg">
+            {error}
+          </p>
+        )}
 
-      <ul>
-        {posts.map((post) => (
-          <li key={post.id}>
-            {editingPost && editingPost.id === post.id ? (
-              // Edit Form
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const title = e.target.title.value;
-                  const description = e.target.description.value;
-                  const type = e.target.type.value;
-                  const status = e.target.status.value;
+        <ul className="space-y-6">
+          {posts.map((post) => (
+            <li key={post.id} className="bg-white p-4 rounded-lg shadow-md">
+              {editingPost && editingPost.id === post.id ? (
+                // Edit Form
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const title = e.target.title.value;
+                    const description = e.target.description.value;
+                    const type = e.target.type.value;
+                    const status = e.target.status.value;
 
-                  updatePost({ ...editingPost, title, description, type, status });
-                }}
+                    updatePost({ ...editingPost, title, description, type, status });
+                  }}
+                  className="space-y-4"
+                >
+                  <input
+                    type="text"
+                    name="title"
+                    defaultValue={post.title}
+                    required
+                    className="w-full border border-gray-300 p-2 rounded-md"
+                  />
+                  <textarea
+                    name="description"
+                    defaultValue={post.description}
+                    required
+                    className="w-full border border-gray-300 p-2 rounded-md"
+                  ></textarea>
+                  <div className="flex space-x-4">
+                    <select
+                      name="type"
+                      defaultValue={post.type}
+                      required
+                      className="w-full border border-gray-300 p-2 rounded-md"
+                    >
+                      <option value="regular">Regular</option>
+                      <option value="video">Video</option>
+                      <option value="image">Image</option>
+                      <option value="gig">Gig</option>
+                    </select>
+                    <select
+                      name="status"
+                      defaultValue={post.status}
+                      required
+                      className="w-full border border-gray-300 p-2 rounded-md"
+                    >
+                      <option value="draft">Draft</option>
+                      <option value="published">Published</option>
+                    </select>
+                  </div>
+                  <div className="flex space-x-4">
+                    <button
+                      type="submit"
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingPost(null)}
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                // Post Details
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800">{post.title}</h3>
+                  <p className="text-gray-600">{post.description}</p>
+                  <p className="text-sm text-gray-500">
+                    <span className="font-bold">Type:</span> {post.type} |{" "}
+                    <span className="font-bold">Status:</span> {post.status}
+                  </p>
+                  <div className="flex space-x-4 mt-4">
+                    <button
+                      onClick={() => setEditingPost(post)}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deletePost(post.id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Create a New Post</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const title = e.target.title.value;
+              const description = e.target.description.value;
+              const type = e.target.type.value;
+              const status = e.target.status.value;
+
+              if (title && description && type && status) {
+                createPost({ title, description, type, status });
+                e.target.reset();
+              }
+            }}
+            className="space-y-4"
+          >
+            <input
+              type="text"
+              name="title"
+              placeholder="Post Title"
+              required
+              className="w-full border border-gray-300 p-2 rounded-md"
+            />
+            <textarea
+              name="description"
+              placeholder="Post Description"
+              required
+              className="w-full border border-gray-300 p-2 rounded-md"
+            ></textarea>
+            <div className="flex space-x-4">
+              <select
+                name="type"
+                required
+                className="w-full border border-gray-300 p-2 rounded-md"
               >
-                <input type="text" name="title" defaultValue={post.title} required />
-                <textarea name="description" defaultValue={post.description} required></textarea>
-                <select name="type" defaultValue={post.type} required>
-                  <option value="regular">Regular</option>
-                  <option value="video">Video</option>
-                  <option value="image">Image</option>
-                  <option value="gig">Gig</option>
-                </select>
-                <select name="status" defaultValue={post.status} required>
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                </select>
-                <button type="submit">Save</button>
-                <button type="button" onClick={() => setEditingPost(null)}>
-                  Cancel
-                </button>
-              </form>
-            ) : (
-              // Post Details
-              <div>
-                <h3>{post.title}</h3>
-                <p>{post.description}</p>
-                <p>Type: {post.type}</p>
-                <p>Status: {post.status}</p>
-                <button onClick={() => setEditingPost(post)}>Edit</button>
-                <button onClick={() => deletePost(post.id)}>Delete</button>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-
-      <h2>Create a New Post</h2>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const title = e.target.title.value;
-          const description = e.target.description.value;
-          const type = e.target.type.value;
-          const status = e.target.status.value;
-
-          if (title && description && type && status) {
-            createPost({ title, description, type, status });
-            e.target.reset();
-          }
-        }}
-      >
-        <input type="text" name="title" placeholder="Post Title" required />
-        <textarea name="description" placeholder="Post Description" required></textarea>
-        <select name="type" required>
-          <option value="regular">Regular</option>
-          <option value="video">Video</option>
-          <option value="image">Image</option>
-          <option value="gig">Gig</option>
-        </select>
-        <select name="status" required>
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-        </select>
-        <button type="submit">Create Post</button>
-      </form>
+                <option value="regular">Regular</option>
+                <option value="video">Video</option>
+                <option value="image">Image</option>
+                <option value="gig">Gig</option>
+              </select>
+              <select
+                name="status"
+                required
+                className="w-full border border-gray-300 p-2 rounded-md"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            >
+              Create Post
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

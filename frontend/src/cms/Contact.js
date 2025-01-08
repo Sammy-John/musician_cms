@@ -41,19 +41,47 @@ const Contact = () => {
   };
 
   return (
-    <div>
-      <h1>Contact Submissions</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <ul>
-        {submissions.map((submission) => (
-          <li key={submission.id}>
-            <h3>{submission.name}</h3>
-            <p>Email: {submission.email}</p>
-            <p>Message: {submission.message}</p>
-            <button onClick={() => deleteSubmission(submission.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="container mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          Contact Submissions
+        </h1>
+        {error && (
+          <p className="text-red-500 bg-red-100 p-3 rounded-lg mb-4">
+            {error}
+          </p>
+        )}
+        {submissions.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {submissions.map((submission) => (
+              <div
+                key={submission.id}
+                className="bg-white rounded-lg shadow-md p-4"
+              >
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                  {submission.name}
+                </h3>
+                <p className="text-gray-600">
+                  <strong>Email:</strong> {submission.email}
+                </p>
+                <p className="text-gray-600 mb-4">
+                  <strong>Message:</strong> {submission.message}
+                </p>
+                <button
+                  onClick={() => deleteSubmission(submission.id)}
+                  className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-600">
+            No contact submissions available at the moment.
+          </p>
+        )}
+      </div>
     </div>
   );
 };

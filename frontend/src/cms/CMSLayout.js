@@ -4,11 +4,19 @@ import Navbar from "./components/Navbar";
 
 const CMSLayout = () => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
+      {/* Navbar */}
       <Navbar />
-      <main>
-        <Outlet /> {/* All protected routes (e.g., Dashboard, Posts) will render here */}
+
+      {/* Content */}
+      <main className="flex-grow p-4 md:p-8">
+        <Outlet />
       </main>
+
+      {/* Footer */}
+      <footer className="text-center text-sm text-gray-500 py-4">
+        &copy; {new Date().getFullYear()} CMS by [Your Name]
+      </footer>
     </div>
   );
 };
