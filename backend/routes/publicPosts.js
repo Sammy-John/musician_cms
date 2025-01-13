@@ -1,30 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const { Post } = require("../models");
+const { Gig } = require("../models");
 
-// Public Route for Published Posts
+// Public Route for Published Gigs
 router.get("/", async (req, res) => {
   try {
     // Optional: Add query parameters for pagination (default: all)
-    const limit = parseInt(req.query.limit, 10) || null; // Number of posts to return
+    const limit = parseInt(req.query.limit, 10) || null; // Number of gigs to return
     const offset = parseInt(req.query.offset, 10) || null; // Starting index
 
-    const posts = await Post.findAll({
+    const gigs = await Gig.findAll({
       where: {
-        status: "published", // Only return published posts
+        status: "published", // Only return published gigs
       },
-      order: [["createdAt", "DESC"]], // Latest posts first
+      order: [["createdAt", "DESC"]], // Latest gigs first
       limit: limit, // Apply limit if specified
       offset: offset, // Apply offset if specified
     });
 
     // Map to return only dataValues
-    const cleanPosts = posts.map((post) => post.dataValues);
+    const cleanGigs = gigs.map((gig) => gig.dataValues);
 
-    console.log("Fetched posts from database:", cleanPosts); // Debugging
-    res.json(cleanPosts); // Respond with cleaned posts
+    console.log("Fetched gigs from database:", cleanGigs); // Debugging
+    res.json(cleanGigs); // Respond with cleaned gigs
   } catch (error) {
-    console.error("Error fetching public posts:", error.message);
+    console.error("Error fetching public gigs:", error.message);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });

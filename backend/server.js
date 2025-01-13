@@ -13,6 +13,7 @@ const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts"); // CMS protected posts
 const publicPostRoutes = require("./routes/publicPosts"); // Public posts route
 const gigRoutes = require("./routes/gigs");
+const publicGigRoutes = require("./routes/publicGigs"); // Public gigs route
 const imageRoutes = require("./routes/images");
 const videoRoutes = require("./routes/videos");
 const contactRoutes = require("./routes/contact");
@@ -34,17 +35,31 @@ sequelize
     console.error("Unable to connect to the database:", error.message);
   });
 
-// Debug Route
+// Debug Routes
 app.get("/debug-posts", async (req, res) => {
   try {
     const results = await sequelize.query(
       `SELECT * FROM public.posts WHERE status = 'published'`,
       { type: sequelize.QueryTypes.SELECT }
     );
-    console.log("Raw query results:", results);
+    console.log("Raw query results for posts:", results);
     res.json(results);
   } catch (error) {
-    console.error("Error executing raw query:", error.message);
+    console.error("Error executing raw query for posts:", error.message);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
+
+app.get("/debug-gigs", async (req, res) => {
+  try {
+    const results = await sequelize.query(
+      `SELECT * FROM public.gigs WHERE status = 'published'`,
+      { type: sequelize.QueryTypes.SELECT }
+    );
+    console.log("Raw query results for gigs:", results);
+    res.json(results);
+  } catch (error) {
+    console.error("Error executing raw query for gigs:", error.message);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
@@ -52,6 +67,7 @@ app.get("/debug-posts", async (req, res) => {
 // Public Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/public-posts", publicPostRoutes); // Mount the publicPosts route
+app.use("/api/public-gigs", publicGigRoutes); // Mount the publicGigs route
 
 // Protected Routes (Requires Authentication)
 app.use("/api/posts", authenticateToken, postRoutes);

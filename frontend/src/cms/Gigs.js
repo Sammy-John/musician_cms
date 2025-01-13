@@ -146,17 +146,20 @@ const Gigs = () => {
                 <strong>Location:</strong> {gig.location} <br />
                 <strong>Ticket Info:</strong>{" "}
                 {gig.ticketInfo === "Free" ? (
-                  "Free"
-                ) : (
-                  <a
-                    href={gig.ticketInfo.ticketUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline"
-                  >
-                    Buy Tickets - £{gig.ticketInfo.price}
-                  </a>
-                )}
+  <span>Free</span>
+) : gig.ticketInfo && gig.ticketInfo.ticketUrl ? (
+  <a
+    href={gig.ticketInfo.ticketUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-blue-500 underline"
+  >
+    Buy Tickets - £{gig.ticketInfo.price}
+  </a>
+) : (
+  <span>No ticket information available</span>
+)}
+
               </p>
               <div className="flex space-x-4 mt-4">
                 <button
