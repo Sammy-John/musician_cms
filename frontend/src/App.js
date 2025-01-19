@@ -27,48 +27,18 @@ function PublicLayout({ children }) {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Function to check token validity
   const isTokenValid = () => {
     const token = localStorage.getItem("token");
     if (!token) return false;
 
     try {
-      const { exp } = JSON.parse(atob(token.split(".")[1])); // Decode JWT payload
-      return Date.now() < exp * 1000; // Check if token is valid
+      const { exp } = JSON.parse(atob(token.split(".")[1]));
+      return Date.now() < exp * 1000;
     } catch (error) {
-      return false; // Invalid token
+      return false;
     }
   };
 
-  // Inactivity timeout
-  useEffect(() => {
-    let inactivityTimer;
-
-    const handleActivity = () => {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-
-      inactivityTimer = setTimeout(() => {
-        localStorage.removeItem("token");
-        setIsLoggedIn(false);
-        alert("You have been logged out due to inactivity.");
-      }, 30 * 60 * 1000); // 30 minutes inactivity timeout
-    };
-
-    if (isLoggedIn) {
-      window.addEventListener("mousemove", handleActivity);
-      window.addEventListener("keydown", handleActivity);
-      handleActivity(); // Start the timer
-    }
-
-    return () => {
-      // Cleanup
-      window.removeEventListener("mousemove", handleActivity);
-      window.removeEventListener("keydown", handleActivity);
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-    };
-  }, [isLoggedIn]);
-
-  // Validate token on app load
   useEffect(() => {
     setIsLoggedIn(isTokenValid());
   }, []);
@@ -117,10 +87,7 @@ function App() {
             <Route path="*" element={<Navigate to="/cms/pages/dashboard" replace />} />
           </Route>
         ) : (
-          <>
-            {/* Redirect unauthorized access to login */}
-            <Route path="*" element={<Navigate to="/cms/login" replace />} />
-          </>
+          <Route path="cms/*" element={<Navigate to="/cms/login" replace />} />
         )}
       </Routes>
     </Router>

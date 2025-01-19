@@ -4,9 +4,12 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     static associate(models) {
-      // Define associations here
+      // Define associations here, such as links to media tables
+      this.belongsTo(models.Image, { foreignKey: 'mediaId', as: 'image' });
+      this.belongsTo(models.Video, { foreignKey: 'mediaId', as: 'video' });
     }
   }
+
   Post.init(
     {
       id: {
@@ -16,15 +19,27 @@ module.exports = (sequelize, DataTypes) => {
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false, // Ensure title is required
+        allowNull: false,
+      },
+      summary: {
+        type: DataTypes.STRING(255), // Short snapshot
+        allowNull: true,
       },
       description: {
-        type: DataTypes.TEXT,
-        allowNull: true, // Description is optional
+        type: DataTypes.TEXT, // Longer description for NewsList
+        allowNull: true,
+      },
+      content: {
+        type: DataTypes.TEXT, // Full content for NewsItemPage
+        allowNull: true,
       },
       type: {
         type: DataTypes.ENUM('regular', 'video', 'image', 'gig'),
-        allowNull: false, // Type is required
+        allowNull: false,
+      },
+      mediaId: {
+        type: DataTypes.UUID, // Optional link to media
+        allowNull: true,
       },
       status: {
         type: DataTypes.ENUM('draft', 'published'),
@@ -34,9 +49,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Post',
-      tableName: 'posts', // Explicit table name
-      timestamps: true, // Enable createdAt and updatedAt
+      tableName: 'Posts',
+      timestamps: true,
     }
   );
+
   return Post;
 };

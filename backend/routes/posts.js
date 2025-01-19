@@ -3,23 +3,6 @@ const router = express.Router();
 const { Post } = require("../models");
 const authenticateToken = require("../middleware/authMiddleware"); // For protected routes
 
-// Public Route: Get Published Posts
-router.get("/public", async (req, res) => {
-  try {
-    const posts = await Post.findAll({
-      where: {
-        status: "published", // Only return published posts
-      },
-      order: [["createdAt", "DESC"]], // Latest posts first
-    });
-    // Map to return only dataValues
-    const cleanPosts = posts.map((post) => post.dataValues);
-    res.json(cleanPosts);
-  } catch (error) {
-    console.error("Error fetching public posts:", error.message);
-    res.status(500).json({ message: "Internal server error", error: error.message });
-  }
-});
 
 // Protected Route: Get All Posts (CMS Access)
 router.get("/", authenticateToken, async (req, res) => {

@@ -1,9 +1,8 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('gigs', {
+    await queryInterface.createTable('Gigs', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -16,7 +15,7 @@ module.exports = {
       },
       time: {
         type: Sequelize.TIME,
-        allowNull: true, // Optional based on use case
+        allowNull: true,
       },
       venue: {
         type: Sequelize.STRING,
@@ -49,6 +48,8 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('gigs');
+    // Ensure proper cleanup of ENUM types
+    await queryInterface.dropTable('Gigs');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Gigs_status";');
   },
 };
