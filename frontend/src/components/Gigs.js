@@ -33,6 +33,30 @@ const Gigs = () => {
     return `${formattedHours}:${minutes} ${period}`;
   };
 
+  // Function to handle ticketInfo display
+  const renderTicketInfo = (ticketInfo) => {
+    if (!ticketInfo || ticketInfo === "Free") {
+      // If ticketInfo is missing or explicitly "Free", display "Free"
+      return <span>Free</span>;
+    }
+    if (typeof ticketInfo === "object" && ticketInfo.link) {
+      // Display link and price for paid tickets
+      return (
+        <a
+          href={ticketInfo.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 underline"
+        >
+          Buy Tickets - £{ticketInfo.price}
+        </a>
+      );
+    }
+    // Default fallback if ticketInfo is invalid
+    return <span>Free</span>;
+  };
+  
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Gig Dates</h1>
@@ -62,26 +86,9 @@ const Gigs = () => {
 
               {/* Time and Tickets */}
               <div style={{ flex: 2, textAlign: "right" }}>
+                <div>{formatTime(gig.time)}</div>
                 <div>
-                  {formatTime(gig.time)}
-                </div>
-                <div>
-                {gig.ticketInfo === "Free" ? (
-  <span>Free</span>
-) : gig.ticketInfo && gig.ticketInfo.ticketUrl ? (
-  <a
-    href={gig.ticketInfo.ticketUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-blue-500 underline"
-  >
-    Buy Tickets - £{gig.ticketInfo.price}
-  </a>
-) : (
-  <span>No ticket information available</span>
-)}
-
-
+                  <strong>Ticket Info:</strong> {renderTicketInfo(gig.ticketInfo)}
                 </div>
               </div>
             </div>
