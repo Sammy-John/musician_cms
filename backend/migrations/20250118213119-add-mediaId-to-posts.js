@@ -1,14 +1,20 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     await queryInterface.addColumn('Posts', 'mediaId', {
       type: Sequelize.UUID,
       allowNull: true,
+      references: {
+        model: 'Images',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.removeColumn('Posts', 'mediaId');
   },
 };
