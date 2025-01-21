@@ -1,123 +1,114 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const News = () => {
-  const slides = [
-    { heading: "News 1", text: "This is the first news item.", link: "#" },
-    { heading: "News 2", text: "This is the second news item.", link: "#" },
-    { heading: "News 3", text: "This is the third news item.", link: "#" },
-    { heading: "News 4", text: "This is the fourth news item.", link: "#" },
-  ];
-
-  // Add cloned slides
-  const extendedSlides = [
-    slides[slides.length - 1], // Clone of the last slide
-    ...slides,
-    slides[0], // Clone of the first slide
-  ];
-
-  const [currentSlide, setCurrentSlide] = useState(1); // Start at the first real slide
+  const [slides, setSlides] = useState([]); // Store fetched news data
+  const [currentSlide, setCurrentSlide] = useState(0); // Start at the first slide
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Auto-scroll timer
+  // Fetch news on component mount
   useEffect(() => {
-    const interval = setInterval(() => {
-      handleNext();
-    }, 3000); // Change slide every 3 seconds
-    return () => clearInterval(interval); // Cleanup on component unmount
-  }, [currentSlide]);
+    const fetchNews = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/public-posts");
+        console.log("Fetched news:", response.data); // Debugging log
+        setSlides(response.data.slice(0, 4)); // Limit to 4 latest news items
+      } catch (err) {
+        console.error("Error fetching news:", err);
+        setError("Failed to fetch news");
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   const handleNext = () => {
-    if (isTransitioning) return;
+    if (isTransitioning || slides.length <= 1) return;
     setIsTransitioning(true);
-    setCurrentSlide((prev) => prev + 1);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const handlePrev = () => {
-    if (isTransitioning) return;
+    if (isTransitioning || slides.length <= 1) return;
     setIsTransitioning(true);
-    setCurrentSlide((prev) => prev - 1);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  // Handle transition end for seamless looping
   const handleTransitionEnd = () => {
     setIsTransitioning(false);
-    if (currentSlide === 0) {
-      setCurrentSlide(slides.length); // Jump to the last real slide
-    } else if (currentSlide === slides.length + 1) {
-      setCurrentSlide(1); // Jump to the first real slide
-    }
   };
 
+  if (error) {
+    return <p className="text-red-500 text-center mt-4">{error}</p>;
+  }
+
   return (
-    <div style={{ display: "flex", height: "300px", border: "1px solid #ccc", overflow: "hidden" }}>
+    <div className="relative flex h-72 border border-gray-300 overflow-hidden">
+      {/* Debugging */}
+      {slides.length === 0 && (
+        <p className="text-gray-500 text-center mt-4">No slides to display.</p>
+      )}
+
       {/* Slider Content */}
-      <div
-        style={{
-          flex: 3,
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
+      <div className="relative flex-1 overflow-hidden">
         <div
+          className="absolute top-0 left-0 w-full h-full"
           style={{
-            position: "absolute",
-            top: `-${currentSlide * 100}%`,
-            transition: isTransitioning ? "top 0.5s ease-in-out" : "none",
-            width: "100%",
+            transform: `translateY(-${currentSlide * 100}%)`,
+            transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
           }}
           onTransitionEnd={handleTransitionEnd}
         >
-          {extendedSlides.map((slide, index) => (
+          {slides.map((slide, index) => (
             <div
               key={index}
+              className="h-72 flex flex-col justify-center items-center text-center p-4"
               style={{
-                height: "300px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "20px",
-                boxSizing: "border-box",
+                flex: "0 0 100%", // Ensure each slide takes up 100% of the container height
               }}
             >
-              <h2 style={{ margin: "10px 0" }}>{slide.heading}</h2>
-              <p style={{ margin: "10px 0" }}>{slide.text}</p>
-              <a href={slide.link} style={{ textDecoration: "none", color: "blue" }}>
-                Read More
-              </a>
+              <h2 className="text-xl font-bold mb-2">{slide.title || "No Title"}</h2>
+              <p className="text-gray-700 mb-4">{slide.description || "No description available."}</p>
+              {slide.link && (
+                <a
+                  href={slide.link}
+                  className="text-blue-500 underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Read More
+                </a>
+              )}
             </div>
           ))}
         </div>
       </div>
 
       {/* Controls */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          borderLeft: "1px solid #ccc",
-        }}
-      >
-        {/* Slide Identifier */}
-        <div style={{ marginBottom: "20px" }}>
+      <div className="flex flex-col justify-center items-center border-l border-gray-300 w-16">
+        {/* Slide Indicator */}
+        <div className="mb-4 text-sm">
           <span>
-            {currentSlide === 0
-              ? slides.length
-              : currentSlide === slides.length + 1
-              ? 1
-              : currentSlide}{" "}
-            / {slides.length}
+            {slides.length > 0 ? currentSlide + 1 : 0} / {slides.length}
           </span>
         </div>
 
         {/* Buttons */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <button onClick={handlePrev}>&uarr;</button>
-          <button onClick={handleNext}>&darr;</button>
-        </div>
+        <button
+          onClick={handlePrev}
+          className="mb-2 p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+          disabled={slides.length <= 1}
+        >
+          &uarr;
+        </button>
+        <button
+          onClick={handleNext}
+          className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+          disabled={slides.length <= 1}
+        >
+          &darr;
+        </button>
       </div>
     </div>
   );

@@ -1,31 +1,47 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Images', {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        allowNull: false,
       },
       url: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      publicId: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       type: {
-        type: Sequelize.STRING
+        type: Sequelize.ENUM('image', 'feature-image'),
+        allowNull: false,
+      },
+      status: {
+        type: Sequelize.ENUM('draft', 'published'),
+        allowNull: false,
+        defaultValue: 'draft',
       },
       createdAt: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updatedAt: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      },
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Images');
-  }
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Images_type";');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Images_status";');
+  },
 };

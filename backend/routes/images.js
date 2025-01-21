@@ -1,89 +1,73 @@
 const express = require("express");
-const { Image } = require("../models");
+const { Image } = require("../models"); // Sequelize Image model
+const cloudinary = require("../config/cloudinary");
 const router = express.Router();
 
-// Get all Images
+// Fetch all images from Cloudinary (Public Route)
+router.get("/cloudinary", async (req, res) => {
+  try {
+    const resources = await cloudinary.api.resources({
+      type: "upload",
+      prefix: "website", // Optional folder prefix for organization
+      max_results: 100,
+    });
+    res.json(resources.resources);
+  } catch (error) {
+    console.error("Error fetching Cloudinary images:", error.message);
+    res.status(500).json({ message: "Error fetching Cloudinary images." });
+  }
+});
+
+// Get all published images (Protected Route)
 router.get("/", async (req, res) => {
   try {
-    const images = await Image.findAll();
+    const images = await Image.findAll({ where: { status: "published" } });
     res.json(images);
   } catch (error) {
-    console.error("Error fetching images:", error.message);
-    res.status(500).json({ message: "Internal server error", error });
+    console.error("Error fetching published images:", error.message);
+    res.status(500).json({ message: "Error fetching published images." });
   }
 });
 
-// Get a Single Image by ID
-router.get("/:id", async (req, res) => {
-  try {
-    const image = await Image.findByPk(req.params.id);
-    if (!image) {
-      return res.status(404).json({ message: "Image not found" });
-    }
-    res.json(image);
-  } catch (error) {
-    console.error("Error fetching image:", error.message);
-    res.status(500).json({ message: "Internal server error", error });
-  }
-});
+// Publish an image (Add to database with published status) (Protected Route)
+router.post("/publish", async (req, res) => {
+  const { url, publicId, type, description } = req.body;
 
-// Create a New Image
-router.post("/", async (req, res) => {
-  const { url, type } = req.body;
-
-  if (!url || !type) {
-    return res.status(400).json({ message: "URL and type are required" });
+  if (!url || !publicId || !type) {
+    return res.status(400).json({ message: "All fields are required." });
   }
 
   try {
-    const newImage = await Image.create({ url, type });
+    const newImage = await Image.create({
+      url,
+      publicId,
+      type,
+      description, // Save description
+      status: "published",
+    });
     res.status(201).json(newImage);
   } catch (error) {
-    console.error("Error creating image:", error.message);
-    res.status(500).json({ message: "Internal server error", error });
+    console.error("Error publishing image:", error.message);
+    res.status(500).json({ message: "Error publishing image." });
   }
 });
 
-// Update an Image
-router.put("/:id", async (req, res) => {
+
+// Unpublish or Delete an image (Protected Route)
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-    const { url, type } = req.body;
-
-    if (!url || !type) {
-      return res.status(400).json({ message: "URL and type are required" });
-    }
-
     const image = await Image.findByPk(id);
     if (!image) {
-      return res.status(404).json({ message: "Image not found" });
-    }
-
-    image.url = url;
-    image.type = type;
-    await image.save();
-
-    res.json(image); // Return the updated image
-  } catch (error) {
-    console.error("Error updating image:", error.message);
-    res.status(500).json({ message: "Internal server error", error });
-  }
-});
-
-
-// Delete an Image
-router.delete("/:id", async (req, res) => {
-  try {
-    const image = await Image.findByPk(req.params.id);
-    if (!image) {
-      return res.status(404).json({ message: "Image not found" });
+      return res.status(404).json({ message: "Image not found." });
     }
 
     await image.destroy();
-    res.json({ message: "Image deleted successfully" });
+    res.json({ message: "Image unpublished successfully." });
   } catch (error) {
-    console.error("Error deleting image:", error.message);
-    res.status(500).json({ message: "Internal server error", error });
+    console.error("Error unpublishing image:", error.message);
+    res.status(500).json({ message: "Error unpublishing image." });
   }
 });
 

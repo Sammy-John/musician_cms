@@ -28,9 +28,10 @@ const Gigs = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("Fetched gigs:", response.data);
       setGigs(response.data);
     } catch (err) {
-      console.error("Error fetching gigs:", err.message);
+      console.error("Error fetching gigs:", err.response?.data || err.message);
       setError("Failed to fetch gigs");
     }
   };
@@ -45,7 +46,7 @@ const Gigs = () => {
       });
       setGigs((prevGigs) => [...prevGigs, response.data]);
     } catch (err) {
-      console.error("Error creating gig:", err.message);
+      console.error("Error creating gig:", err.response?.data || err.message);
       setError("Failed to create gig");
     }
   };
@@ -85,7 +86,9 @@ const Gigs = () => {
     e.preventDefault();
 
     const ticketInfoValue =
-      ticketInfo === "Free" ? "Free" : { ticketUrl, price: ticketPrice };
+      ticketInfo === "Free"
+        ? "Free"
+        : { link: ticketUrl, price: ticketPrice };
 
     const gigData = {
       date,
@@ -93,6 +96,7 @@ const Gigs = () => {
       venue,
       location,
       ticketInfo: ticketInfoValue,
+      status: "draft", // Default status
     };
 
     if (editingGig) {
@@ -117,15 +121,20 @@ const Gigs = () => {
     setTime(gig.time);
     setVenue(gig.venue);
     setLocation(gig.location);
-    if (gig.ticketInfo === "Free") {
+
+    if (!gig.ticketInfo || gig.ticketInfo === "Free") {
       setTicketInfo("Free");
       setTicketUrl("");
       setTicketPrice("");
     } else {
       setTicketInfo("Paid");
-      setTicketUrl(gig.ticketInfo.ticketUrl);
-      setTicketPrice(gig.ticketInfo.price);
+      setTicketUrl(gig.ticketInfo?.link || "");
+      setTicketPrice(gig.ticketInfo?.price || "");
     }
+  };
+
+  const handlePublishGig = (gig) => {
+    updateGig({ ...gig, status: "published" });
   };
 
   return (
@@ -144,18 +153,21 @@ const Gigs = () => {
                 <strong>Date:</strong> {gig.date} <br />
                 <strong>Time:</strong> {gig.time} <br />
                 <strong>Location:</strong> {gig.location} <br />
+                <strong>Status:</strong> {gig.status} <br />
                 <strong>Ticket Info:</strong>{" "}
                 {gig.ticketInfo === "Free" ? (
-                  "Free"
-                ) : (
+                  <span>Free</span>
+                ) : gig.ticketInfo && gig.ticketInfo.link ? (
                   <a
-                    href={gig.ticketInfo.ticketUrl}
+                    href={gig.ticketInfo.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 underline"
                   >
                     Buy Tickets - £{gig.ticketInfo.price}
                   </a>
+                ) : (
+                  <span>No ticket information available</span>
                 )}
               </p>
               <div className="flex space-x-4 mt-4">
@@ -164,6 +176,15 @@ const Gigs = () => {
                   className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
                 >
                   Edit
+                </button>
+                <button
+                  onClick={() => handlePublishGig(gig)}
+                  className={`${
+                    gig.status === "published" ? "bg-gray-400" : "bg-blue-500"
+                  } text-white px-4 py-2 rounded-md hover:bg-blue-600`}
+                  disabled={gig.status === "published"}
+                >
+                  Publish
                 </button>
                 <button
                   onClick={() => deleteGig(gig.id)}

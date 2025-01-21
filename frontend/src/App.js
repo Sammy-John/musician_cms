@@ -1,61 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import NewsPage from "./pages/NewsPage";
+import FullPost from "./components/FullPost";
 import Login from "./cms/Login";
 import CMSLayout from "./cms/CMSLayout";
 import Dashboard from "./cms/pages/Dashboard";
 import Posts from "./cms/Posts";
 import Gigs from "./cms/Gigs";
-import Images from "./cms/Images";
+import Images from "./cms/Images"; // CMS image management
 import Videos from "./cms/Videos";
 import Contact from "./cms/Contact";
-import './cms/global.css';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import ImagesPage from "./pages/Images"; // Public image display
 
+function PublicLayout({ children }) {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
+}
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Function to check token validity
   const isTokenValid = () => {
     const token = localStorage.getItem("token");
     if (!token) return false;
 
     try {
-      const { exp } = JSON.parse(atob(token.split(".")[1])); // Decode JWT payload
-      return Date.now() < exp * 1000; // Check if token is valid
+      const { exp } = JSON.parse(atob(token.split(".")[1]));
+      return Date.now() < exp * 1000;
     } catch (error) {
-      return false; // Invalid token
+      return false;
     }
   };
 
-  // Inactivity timeout
-  useEffect(() => {
-    let inactivityTimer;
-
-    const handleActivity = () => {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-
-      inactivityTimer = setTimeout(() => {
-        localStorage.removeItem("token");
-        setIsLoggedIn(false);
-        alert("You have been logged out due to inactivity.");
-      }, 30 * 60 * 1000); // 30 minutes inactivity timeout
-    };
-
-    if (isLoggedIn) {
-      window.addEventListener("mousemove", handleActivity);
-      window.addEventListener("keydown", handleActivity);
-      handleActivity(); // Start the timer
-    }
-
-    return () => {
-      // Cleanup
-      window.removeEventListener("mousemove", handleActivity);
-      window.removeEventListener("keydown", handleActivity);
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-    };
-  }, [isLoggedIn]);
-
-  // Validate token on app load
   useEffect(() => {
     setIsLoggedIn(isTokenValid());
   }, []);
@@ -63,7 +47,41 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Login Route */}
+        {/* Public Routes */}
+        <Route
+          path="/"
+          element={
+            <PublicLayout>
+              <Home />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/news"
+          element={
+            <PublicLayout>
+              <NewsPage />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/news/:id"
+          element={
+            <PublicLayout>
+              <FullPost />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/images"
+          element={
+            <PublicLayout>
+              <ImagesPage />
+            </PublicLayout>
+          }
+        />
+
+        {/* Login Route */}
         <Route path="/cms/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
 
         {/* Protected CMS Routes */}
@@ -78,10 +96,7 @@ function App() {
             <Route path="*" element={<Navigate to="/cms/pages/dashboard" replace />} />
           </Route>
         ) : (
-          <>
-            {/* Redirect unauthorized access to login */}
-            <Route path="*" element={<Navigate to="/cms/login" replace />} />
-          </>
+          <Route path="cms/*" element={<Navigate to="/cms/login" replace />} />
         )}
       </Routes>
     </Router>
