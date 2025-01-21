@@ -2,8 +2,259 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CMS-specific styles */
+/* Define custom utility classes */
+@layer utilities {
+  .bg-primary {
+    --tw-bg-opacity: 1;
+    background-color: rgba(30, 58, 138, var(--tw-bg-opacity)); /* Dark Blue */
+  }
+
+  .text-primary {
+    --tw-text-opacity: 1;
+    color: rgba(30, 58, 138, var(--tw-text-opacity));
+  }
+
+  .bg-secondary {
+    --tw-bg-opacity: 1;
+    background-color: rgba(245, 158, 11, var(--tw-bg-opacity)); /* Amber */
+  }
+
+  .bg-secondary-light {
+    --tw-bg-opacity: 1;
+    background-color: rgba(251, 191, 36, var(--tw-bg-opacity)); /* Light Amber */
+  }
+
+  .text-secondary-light {
+    --tw-text-opacity: 1;
+    color: rgba(251, 191, 36, var(--tw-text-opacity));
+  }
+
+  .bg-accent-red {
+    --tw-bg-opacity: 1;
+    background-color: rgba(239, 68, 68, var(--tw-bg-opacity)); /* Red */
+  }
+
+  .bg-accent-cyan {
+    --tw-bg-opacity: 1;
+    background-color: rgba(6, 182, 212, var(--tw-bg-opacity)); /* Cyan */
+  }
+}
+
+/* CMS-Specific Global Styles */
 body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  @apply bg-gray-100 text-gray-800;
+}
+
+/* Login Styles */
+.cms-container {
+  @apply min-h-screen flex items-center justify-center bg-gray-100;
+}
+
+.cms-card {
+  @apply bg-white shadow-lg rounded-lg p-8 w-full max-w-sm;
+}
+
+.cms-heading {
+  @apply text-2xl font-bold text-gray-800 mb-4 text-center;
+}
+
+.cms-form-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.cms-input {
+  @apply w-full mt-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500;
+}
+
+.cms-button {
+  @apply w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition;
+}
+
+.cms-error-text {
+  @apply text-sm text-red-500 mt-4 text-center;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+  @apply bg-gray-100 min-h-screen flex flex-col items-center justify-center px-4;
+}
+
+.dashboard-wrapper {
+  @apply bg-white shadow-lg rounded-lg p-8 max-w-4xl w-full;
+}
+
+.dashboard-heading {
+  @apply text-4xl font-bold text-gray-800 mb-6 text-center;
+}
+
+.dashboard-subheading {
+  @apply text-gray-600 text-center mb-8;
+}
+
+.dashboard-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6;
+}
+
+.dashboard-card {
+  @apply rounded-lg shadow-md p-6 flex flex-col items-center text-white;
+}
+
+.dashboard-card-heading {
+  @apply text-xl font-semibold mb-2;
+}
+
+.dashboard-card-description {
+  @apply text-sm mb-4 text-center;
+}
+
+/* Default Button Styling */
+/* Default Button Styling */
+.dashboard-button {
+    @apply font-semibold px-4 py-2 rounded-md transition;
+    background-color: rgba(0, 0, 0, 0.7); /* Black background */
+    border: 1px solid transparent; /* Invisible border for spacing */
+    color: inherit; /* Matches the card's text color */
+  }
+  
+  /* Hover Effect */
+  .dashboard-button:hover {
+    color: #ffffff; /* White text on hover */
+  }
+  
+  /* Card-Specific Hover Styles */
+  .card-indigo .dashboard-button:hover {
+    background-color: rgba(67, 56, 202, 1); /* Indigo background */
+  }
+  
+  .card-green .dashboard-button:hover {
+    background-color: rgba(21, 128, 61, 1); /* Green background */
+  }
+  
+  .card-purple .dashboard-button:hover {
+    background-color: rgba(126, 34, 206, 1); /* Purple background */
+  }
+  
+  .card-red .dashboard-button:hover {
+    background-color: rgba(185, 28, 28, 1); /* Red background */
+  }
+  
+  .card-yellow .dashboard-button:hover {
+    background-color: rgba(161, 98, 7, 1); /* Yellow background */
+  }
+  
+  
+  /* Hover Effect */
+  .dashboard-button:hover {
+    color: #ffffff; /* White text on hover */
+  }
+  
+  /* Card-Specific Hover Styles */
+  .card-indigo .dashboard-button:hover {
+    background-color: rgba(67, 56, 202, 1); /* Indigo background */
+  }
+  
+  .card-green .dashboard-button:hover {
+    background-color: rgba(21, 128, 61, 1); /* Green background */
+  }
+  
+  .card-purple .dashboard-button:hover {
+    background-color: rgba(126, 34, 206, 1); /* Purple background */
+  }
+  
+  .card-red .dashboard-button:hover {
+    background-color: rgba(185, 28, 28, 1); /* Red background */
+  }
+  
+  .card-yellow .dashboard-button:hover {
+    background-color: rgba(161, 98, 7, 1); /* Yellow background */
+  }
+  
+  
+.active-dashboard-button {
+  @apply border-2 border-indigo-700;
+}
+
+/* Card-Specific Colors */
+.card-indigo {
+  @apply bg-gradient-to-br from-indigo-500 to-indigo-700 text-indigo-100;
+}
+
+.card-green {
+  @apply bg-gradient-to-br from-green-500 to-green-700 text-green-100;
+}
+
+.card-purple {
+  @apply bg-gradient-to-br from-purple-500 to-purple-700 text-purple-100;
+}
+
+.card-red {
+  @apply bg-gradient-to-br from-red-500 to-red-700 text-red-100;
+}
+
+.card-yellow {
+  @apply bg-gradient-to-br from-yellow-500 to-yellow-700 text-yellow-100;
+}
+
+/* Navbar Styles */
+.navbar {
+  @apply bg-primary text-white border-b shadow-md;
+}
+
+.navbar-container {
+  @apply container mx-auto px-4 flex justify-between items-center py-3;
+}
+
+.navbar-logo {
+  @apply text-lg font-bold text-secondary-light tracking-wide;
+}
+
+/* Hamburger Menu (Mobile) */
+.navbar-toggle {
+  @apply text-neutral-light focus:outline-none md:hidden flex flex-col gap-1;
+}
+
+.navbar-toggle-bar {
+  @apply h-1 w-6 bg-white transition-all;
+}
+
+.navbar-toggle-bar-open {
+  @apply rotate-45 translate-y-2;
+}
+
+.navbar-toggle-bar-hidden {
+  @apply opacity-0;
+}
+
+.navbar-toggle-bar-close {
+  @apply -rotate-45 -translate-y-2;
+}
+
+/* Navigation Links */
+.navbar-links {
+  @apply hidden md:flex md:items-center md:gap-6 md:space-y-0;
+}
+
+.navbar-links-mobile {
+  @apply flex flex-col items-center justify-center h-screen bg-primary w-full absolute top-0 left-0 z-50;
+}
+
+.navbar-link {
+  @apply block py-2 px-4 text-white rounded transition-colors text-center;
+}
+
+.navbar-link:hover {
+  @apply bg-secondary-light;
+}
+
+.navbar-link-active {
+  @apply bg-secondary text-white;
+}
+
+/* Logout Button */
+.navbar-logout {
+  @apply block py-2 px-4 bg-accent-red text-white rounded transition-colors text-center;
+}
+
+.navbar-logout:hover {
+  @apply bg-accent-cyan;
 }
