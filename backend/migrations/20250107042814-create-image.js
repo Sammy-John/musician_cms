@@ -7,6 +7,7 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
+        allowNull: false,
       },
       url: {
         type: Sequelize.STRING,
@@ -17,9 +18,8 @@ module.exports = {
         allowNull: false,
       },
       type: {
-        type: Sequelize.ENUM('normal', 'featured'),
+        type: Sequelize.ENUM('image', 'feature-image'),
         allowNull: false,
-        defaultValue: 'normal',
       },
       status: {
         type: Sequelize.ENUM('draft', 'published'),
@@ -41,5 +41,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Images');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Images_type";');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Images_status";');
   },
 };

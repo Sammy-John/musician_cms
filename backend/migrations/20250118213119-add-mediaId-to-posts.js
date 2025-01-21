@@ -6,8 +6,8 @@ module.exports = {
       type: Sequelize.UUID,
       allowNull: true,
       references: {
-        model: 'Images',
-        key: 'id',
+        model: 'Images', // Correct table name
+        key: 'id', // Primary key in the referenced table
       },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
