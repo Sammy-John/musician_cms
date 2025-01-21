@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CMS-specific styles */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
