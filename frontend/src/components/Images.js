@@ -1,17 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const Images = () => {
-  // Placeholder image data
-  const imageData = [
-    { id: 1, src: "https://via.placeholder.com/150", alt: "Image 1" },
-    { id: 2, src: "https://via.placeholder.com/150", alt: "Image 2" },
-    { id: 3, src: "https://via.placeholder.com/300x300", alt: "Featured Image 1" },
-    { id: 4, src: "https://via.placeholder.com/300x300", alt: "Featured Image 2" },
-    { id: 5, src: "https://via.placeholder.com/150", alt: "Image 3" },
-    { id: 6, src: "https://via.placeholder.com/150", alt: "Image 4" },
-  ];
-
+const SiteImages = () => {
+  const [featuredImages, setFeaturedImages] = useState([]);
+  const [regularImages, setRegularImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchPublishedImages();
+  }, []);
+
+  const fetchPublishedImages = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/images");
+      const publishedImages = response.data;
+
+      console.log("Fetched Published Images:", publishedImages);
+
+      const featured = publishedImages.filter((image) => image.type === "feature-image");
+      const regular = publishedImages.filter((image) => image.type === "image");
+
+      setFeaturedImages(featured);
+      setRegularImages(regular);
+    } catch (err) {
+      console.error("Error fetching published images:", err);
+      setError("Failed to load images.");
+    }
+  };
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -20,6 +36,27 @@ const Images = () => {
   const handleClose = () => {
     setSelectedImage(null);
   };
+
+  const placeholders = [
+    { id: "placeholder1", url: "https://via.placeholder.com/150", description: "Placeholder 1" },
+    { id: "placeholder2", url: "https://via.placeholder.com/300x300", description: "Placeholder 2" },
+  ];
+
+  const displayedFeaturedImages = [...featuredImages];
+  while (displayedFeaturedImages.length < 2) {
+    displayedFeaturedImages.push({
+      ...placeholders[1],
+      id: `placeholder-featured-${displayedFeaturedImages.length}`,
+    });
+  }
+
+  const displayedRegularImages = [...regularImages];
+  while (displayedRegularImages.length < 4) {
+    displayedRegularImages.push({
+      ...placeholders[0],
+      id: `placeholder-regular-${displayedRegularImages.length}`,
+    });
+  }
 
   return (
     <div style={{ padding: "20px" }}>
@@ -33,82 +70,69 @@ const Images = () => {
           marginTop: "20px",
         }}
       >
-        {/* First Column */}
         <div style={{ gridColumn: "1 / 2", gridRow: "1 / 3" }}>
-          <div
-            style={{ marginBottom: "5px", position: "relative" }}
-            onClick={() => handleImageClick(imageData[0])}
-          >
-            <img
-              src={imageData[0].src}
-              alt={imageData[0].alt}
-              style={{ width: "100%", cursor: "pointer" }}
-            />
-          </div>
-          <div style={{ position: "relative" }} onClick={() => handleImageClick(imageData[1])}>
-            <img
-              src={imageData[1].src}
-              alt={imageData[1].alt}
-              style={{ width: "100%", cursor: "pointer" }}
-            />
-          </div>
+          {displayedRegularImages.slice(0, 2).map((image) => (
+            <div
+              key={image.id}
+              style={{ marginBottom: "5px", position: "relative" }}
+              onClick={() => handleImageClick(image)}
+            >
+              <img
+                src={image.url}
+                alt={image.description}
+                style={{ width: "100%", cursor: "pointer" }}
+              />
+            </div>
+          ))}
         </div>
 
-        {/* Featured Image 1 */}
         <div
           style={{
             gridColumn: "2 / 4",
             gridRow: "1 / 3",
             position: "relative",
           }}
-          onClick={() => handleImageClick(imageData[2])}
+          onClick={() => handleImageClick(displayedFeaturedImages[0])}
         >
           <img
-            src={imageData[2].src}
-            alt={imageData[2].alt}
+            src={displayedFeaturedImages[0].url}
+            alt={displayedFeaturedImages[0].description}
             style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
           />
         </div>
 
-        {/* Featured Image 2 */}
         <div
           style={{
             gridColumn: "4 / 6",
             gridRow: "1 / 3",
             position: "relative",
           }}
-          onClick={() => handleImageClick(imageData[3])}
+          onClick={() => handleImageClick(displayedFeaturedImages[1])}
         >
           <img
-            src={imageData[3].src}
-            alt={imageData[3].alt}
+            src={displayedFeaturedImages[1].url}
+            alt={displayedFeaturedImages[1].description}
             style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
           />
         </div>
 
-        {/* Last Column */}
         <div style={{ gridColumn: "6 / 7", gridRow: "1 / 3" }}>
-          <div
-            style={{ marginBottom: "5px", position: "relative" }}
-            onClick={() => handleImageClick(imageData[4])}
-          >
-            <img
-              src={imageData[4].src}
-              alt={imageData[4].alt}
-              style={{ width: "100%", cursor: "pointer" }}
-            />
-          </div>
-          <div style={{ position: "relative" }} onClick={() => handleImageClick(imageData[5])}>
-            <img
-              src={imageData[5].src}
-              alt={imageData[5].alt}
-              style={{ width: "100%", cursor: "pointer" }}
-            />
-          </div>
+          {displayedRegularImages.slice(2, 4).map((image) => (
+            <div
+              key={image.id}
+              style={{ marginBottom: "5px", position: "relative" }}
+              onClick={() => handleImageClick(image)}
+            >
+              <img
+                src={image.url}
+                alt={image.description}
+                style={{ width: "100%", cursor: "pointer" }}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Pop-Out View */}
       {selectedImage && (
         <div
           style={{
@@ -126,8 +150,8 @@ const Images = () => {
         >
           <div style={{ position: "relative", maxWidth: "90%", maxHeight: "90%" }}>
             <img
-              src={selectedImage.src}
-              alt={selectedImage.alt}
+              src={selectedImage.url}
+              alt={selectedImage.description}
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
             <button
@@ -153,4 +177,4 @@ const Images = () => {
   );
 };
 
-export default Images;
+export default SiteImages;

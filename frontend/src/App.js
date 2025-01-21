@@ -8,11 +8,12 @@ import CMSLayout from "./cms/CMSLayout";
 import Dashboard from "./cms/pages/Dashboard";
 import Posts from "./cms/Posts";
 import Gigs from "./cms/Gigs";
-import Images from "./cms/Images";
+import Images from "./cms/Images"; // CMS image management
 import Videos from "./cms/Videos";
 import Contact from "./cms/Contact";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ImagesPage from "./pages/Images"; // Public image display
 
 function PublicLayout({ children }) {
   return (
@@ -68,6 +69,14 @@ function App() {
           element={
             <PublicLayout>
               <FullPost />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/images"
+          element={
+            <PublicLayout>
+              <ImagesPage />
             </PublicLayout>
           }
         />

@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
 
 // Publish an image (Add to database with published status) (Protected Route)
 router.post("/publish", async (req, res) => {
-  const { url, publicId, type } = req.body;
+  const { url, publicId, type, description } = req.body;
 
   if (!url || !publicId || !type) {
     return res.status(400).json({ message: "All fields are required." });
@@ -42,6 +42,7 @@ router.post("/publish", async (req, res) => {
       url,
       publicId,
       type,
+      description, // Save description
       status: "published",
     });
     res.status(201).json(newImage);
@@ -50,6 +51,7 @@ router.post("/publish", async (req, res) => {
     res.status(500).json({ message: "Error publishing image." });
   }
 });
+
 
 // Unpublish or Delete an image (Protected Route)
 router.delete("/:id", async (req, res) => {

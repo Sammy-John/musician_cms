@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'draft',
       },
+      description: {
+        type: DataTypes.STRING, // New description field
+        allowNull: true, // Optional field
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
