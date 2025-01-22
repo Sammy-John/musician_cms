@@ -2,7 +2,7 @@
 .news-container {
     position: relative;
     display: flex;
-    height: 18rem;
+    height: 50vh;
     border: 1px solid var(--border-color);
     overflow: hidden;
     background-color: white;

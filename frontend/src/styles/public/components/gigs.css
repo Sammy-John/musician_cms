@@ -1,0 +1,112 @@
+/* Container */
+.gigs-container {
+    margin: 0 auto; /* Center the container */
+    padding: 50px;
+    background-image: url('../../../images/rustic-deep-blue-concrete-textured-background.jpg');
+    height: 50vh;
+    max-width: 1600px;
+}
+
+/* Heading */
+.gigs-heading {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--heading-color);
+}
+
+/* Gigs List */
+.gigs-list {
+    margin-top: 20px;
+}
+
+/* Individual Gig Item */
+.gig-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+}
+
+/* Gig Date */
+.gig-date {
+    flex: 1;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: left; /* Align the date text */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+
+/* Gig Details */
+.gig-details {
+    flex: 3;
+    display: flex;
+    flex-direction: column; /* Ensure venue and location stack vertically */
+    gap: 0.5rem; /* Add spacing between venue and location */
+    text-transform: uppercase;
+}
+
+/* Venue */
+.gig-venue {
+    color: white; /* Custom color for venue */
+    font-weight: bold; /* Make it stand out */
+}
+
+/* Location */
+.gig-location {
+    color: var(--secondary-color); /* Custom color for location */
+}
+
+/* Gig Meta (Time and Tickets) */
+.gig-meta {
+    flex: 2;
+    text-align: right;
+    color: var(--text-color);
+}
+
+/* Gig Meta (Time and Ticket Info Container) */
+.gig-meta {
+    display: flex; /* Align child elements horizontally */
+    justify-content: space-between; /* Space out time and ticket info */
+    align-items: center; /* Vertically center content */
+    gap: 1rem; /* Add space between elements */
+    flex: 2;
+    text-align: right; /* Align content to the right */
+}
+
+/* Gig Time */
+.gig-time {
+    color: var(--primary-color); /* Custom color for time */
+    font-weight: bold; /* Make it stand out */
+}
+
+/* Gig Ticket Info */
+.gig-ticket-info {
+    color: var(--secondary-color); /* Custom color for ticket info */
+    font-style: italic; /* Differentiate with font style */
+}
+
+
+/* Ticket Link */
+.gig-ticket-link {
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+.gig-ticket-link:hover {
+    color: var(--secondary-color);
+}
+
+/* Error Message */
+.gig-error {
+    color: red;
+    text-align: center;
+}
+
+/* Empty Message */
+.gig-empty {
+    text-align: center;
+    color: var(--muted-text);
+    margin-top: 20px;
+}
