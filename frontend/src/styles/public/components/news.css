@@ -50,8 +50,8 @@
 .news-slide::before {
     content: '';
     position: absolute;
-    width: 270px; /* Existing circular size */
-    height: 270px;
+    width: 350px;/* Existing circular size */
+    height: 350px;
     background-image: url('../../../images/background_dan.webp'); /* Existing image */
     background-size: cover;
     background-position: center;
