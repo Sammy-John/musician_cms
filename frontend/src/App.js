@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import NewsPage from "./pages/NewsPage";
-import FullPost from "./components/FullPost";
 import Login from "./cms/Login";
 import CMSLayout from "./cms/CMSLayout";
 import Dashboard from "./cms/pages/Dashboard";
@@ -14,6 +13,7 @@ import Contact from "./cms/Contact";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ImagesPage from "./pages/Images"; // Public image display
+import NewsItemPage from "./pages/NewsItemPage";
 
 // Import styles
 import "./styles/cms/index.css"; // CMS-specific styles
@@ -100,14 +100,8 @@ function App() {
             </PublicLayout>
           }
         />
-        <Route
-          path="/news/:id"
-          element={
-            <PublicLayout>
-              <FullPost />
-            </PublicLayout>
-          }
-        />
+        <Route path="/news/:id" element={<NewsItemPage />} />
+      
         <Route
           path="/images"
           element={

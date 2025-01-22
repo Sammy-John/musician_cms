@@ -2,14 +2,21 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import "../styles/public/components/header.css"; // Import the dedicated header stylesheet
 
 const Header = () => {
   return (
-    <header style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
-      <h1>Daniel Browne</h1>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <header className="header">
+      <div className="header-title-wrapper">
+        <h1>
+          <Link to="/" className="header-title">
+            Daniel Browne
+          </Link>
+        </h1>
+      </div>
+      <div className="header-content">
         {/* Social Media Icons */}
-        <div style={{ flex: 1, display: "flex", gap: "10px" }}>
+        <div className="social-icons">
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faFacebook} size="2x" />
           </a>
@@ -22,20 +29,20 @@ const Header = () => {
         </div>
 
         {/* Navigation Links */}
-        <nav style={{ flex: 2, textAlign: "center" }}>
-          <Link to="/" style={{ margin: "0 10px" }}>Home</Link>
-          <Link to="/news" style={{ margin: "0 10px" }}>News</Link>
-          <Link to="/videos" style={{ margin: "0 10px" }}>Videos</Link>
-          <Link to="/images" style={{ margin: "0 10px" }}>Images</Link>
-          <Link to="/contact" style={{ margin: "0 10px" }}>Contact</Link>
+        <nav className="nav-links">
+          <Link to="/news">News</Link>
+          <Link to="/videos">Videos</Link>
+          <Link to="/images">Images</Link>
+          <Link to="/contact">Contact</Link>
         </nav>
 
         {/* Empty Column for Layout */}
-        <div style={{ flex: 1 }}></div>
+        <div className="spacer"></div>
       </div>
     </header>
   );
 };
 
 export default Header;
+
 
