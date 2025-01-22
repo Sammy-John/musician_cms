@@ -32,7 +32,7 @@ const Header = () => {
         <nav className="nav-links">
           <Link to="/news">News</Link>
           <Link to="/videos">Videos</Link>
-          <Link to="/images">Images</Link>
+          <Link to="/images">Photos</Link>
           <Link to="/contact">Contact</Link>
         </nav>
 
