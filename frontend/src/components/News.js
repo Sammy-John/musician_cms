@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import "../styles/public/components/news.css"; // Import the dedicated stylesheet
 
 const News = () => {
   const [slides, setSlides] = useState([]); // Store fetched news data
@@ -40,20 +42,16 @@ const News = () => {
   };
 
   if (error) {
-    return <p className="text-red-500 text-center mt-4">{error}</p>;
+    return <p className="news-error">{error}</p>;
   }
 
   return (
-    <div className="relative flex h-72 border border-gray-300 overflow-hidden">
-      {/* Debugging */}
-      {slides.length === 0 && (
-        <p className="text-gray-500 text-center mt-4">No slides to display.</p>
-      )}
+    <div className="news-container">
+      {slides.length === 0 && <p className="news-empty">No slides to display.</p>}
 
-      {/* Slider Content */}
-      <div className="relative flex-1 overflow-hidden">
+      <div className="news-slider">
         <div
-          className="absolute top-0 left-0 w-full h-full"
+          className="news-slides"
           style={{
             transform: `translateY(-${currentSlide * 100}%)`,
             transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
@@ -61,50 +59,33 @@ const News = () => {
           onTransitionEnd={handleTransitionEnd}
         >
           {slides.map((slide, index) => (
-            <div
-              key={index}
-              className="h-72 flex flex-col justify-center items-center text-center p-4"
-              style={{
-                flex: "0 0 100%", // Ensure each slide takes up 100% of the container height
-              }}
-            >
-              <h2 className="text-xl font-bold mb-2">{slide.title || "No Title"}</h2>
-              <p className="text-gray-700 mb-4">{slide.description || "No description available."}</p>
-              {slide.link && (
-                <a
-                  href={slide.link}
-                  className="text-blue-500 underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Read More
-                </a>
-              )}
+            <div key={index} className="news-slide">
+              <h2 className="news-title">{slide.title || "No Title"}</h2>
+              <p className="news-description">{slide.summary || "No description available."}</p>
+              <Link to={`/news/${slide.id}`} className="news-link">
+                Read More
+              </Link>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-col justify-center items-center border-l border-gray-300 w-16">
-        {/* Slide Indicator */}
-        <div className="mb-4 text-sm">
+      <div className="news-controls">
+        <div className="news-indicator">
           <span>
             {slides.length > 0 ? currentSlide + 1 : 0} / {slides.length}
           </span>
         </div>
-
-        {/* Buttons */}
         <button
           onClick={handlePrev}
-          className="mb-2 p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+          className="news-button news-button-up"
           disabled={slides.length <= 1}
         >
           &uarr;
         </button>
         <button
           onClick={handleNext}
-          className="p-2 bg-gray-200 hover:bg-gray-300 rounded-full"
+          className="news-button news-button-down"
           disabled={slides.length <= 1}
         >
           &darr;

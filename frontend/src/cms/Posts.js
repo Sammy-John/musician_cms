@@ -46,20 +46,21 @@ const Posts = () => {
       const token = localStorage.getItem("token");
       const response = await axios.put(
         `http://localhost:5000/api/posts/${updatedPost.id}`,
-        updatedPost,
+        updatedPost, // Make sure this contains `summary` and `content`
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setPosts(posts.map((post) => (post.id === updatedPost.id ? response.data : post))); // Update the post in the list
+      setPosts(posts.map((post) => (post.id === updatedPost.id ? response.data : post)));
       setEditingPost(null); // Reset editing state
     } catch (err) {
       console.error("Error updating post:", err);
       setError("Failed to update post");
     }
   };
+  
 
   const deletePost = async (id) => {
     try {
@@ -81,9 +82,7 @@ const Posts = () => {
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Posts Management</h1>
         {error && (
-          <p className="text-red-500 bg-red-100 p-3 rounded-lg">
-            {error}
-          </p>
+          <p className="text-red-500 bg-red-100 p-3 rounded-lg">{error}</p>
         )}
 
         <ul className="space-y-6">
@@ -92,15 +91,25 @@ const Posts = () => {
               {editingPost && editingPost.id === post.id ? (
                 // Edit Form
                 <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const title = e.target.title.value;
-                    const description = e.target.description.value;
-                    const type = e.target.type.value;
-                    const status = e.target.status.value;
-
-                    updatePost({ ...editingPost, title, description, type, status });
-                  }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const title = e.target.title.value;
+                  const summary = e.target.summary.value;
+                  const description = e.target.description.value;
+                  const content = e.target.content.value;
+                  const type = e.target.type.value;
+                  const status = e.target.status.value;
+              
+                  updatePost({
+                    ...editingPost,
+                    title,
+                    summary,
+                    description,
+                    content,
+                    type,
+                    status,
+                  });
+                }}
                   className="space-y-4"
                 >
                   <input
@@ -110,9 +119,22 @@ const Posts = () => {
                     required
                     className="w-full border border-gray-300 p-2 rounded-md"
                   />
+                  <input
+                    type="text"
+                    name="summary"
+                    defaultValue={post.summary}
+                    required
+                    className="w-full border border-gray-300 p-2 rounded-md"
+                  />
                   <textarea
                     name="description"
                     defaultValue={post.description}
+                    required
+                    className="w-full border border-gray-300 p-2 rounded-md"
+                  ></textarea>
+                  <textarea
+                    name="content"
+                    defaultValue={post.content}
                     required
                     className="w-full border border-gray-300 p-2 rounded-md"
                   ></textarea>
@@ -158,6 +180,7 @@ const Posts = () => {
                 // Post Details
                 <div>
                   <h3 className="text-xl font-semibold text-gray-800">{post.title}</h3>
+                  <p className="text-gray-500">{post.summary}</p>
                   <p className="text-gray-600">{post.description}</p>
                   <p className="text-sm text-gray-500">
                     <span className="font-bold">Type:</span> {post.type} |{" "}
@@ -182,65 +205,6 @@ const Posts = () => {
             </li>
           ))}
         </ul>
-
-        <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Create a New Post</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const title = e.target.title.value;
-              const description = e.target.description.value;
-              const type = e.target.type.value;
-              const status = e.target.status.value;
-
-              if (title && description && type && status) {
-                createPost({ title, description, type, status });
-                e.target.reset();
-              }
-            }}
-            className="space-y-4"
-          >
-            <input
-              type="text"
-              name="title"
-              placeholder="Post Title"
-              required
-              className="w-full border border-gray-300 p-2 rounded-md"
-            />
-            <textarea
-              name="description"
-              placeholder="Post Description"
-              required
-              className="w-full border border-gray-300 p-2 rounded-md"
-            ></textarea>
-            <div className="flex space-x-4">
-              <select
-                name="type"
-                required
-                className="w-full border border-gray-300 p-2 rounded-md"
-              >
-                <option value="regular">Regular</option>
-                <option value="video">Video</option>
-                <option value="image">Image</option>
-                <option value="gig">Gig</option>
-              </select>
-              <select
-                name="status"
-                required
-                className="w-full border border-gray-300 p-2 rounded-md"
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </select>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-            >
-              Create Post
-            </button>
-          </form>
-        </div>
       </div>
     </div>
   );

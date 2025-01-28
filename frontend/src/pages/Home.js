@@ -4,10 +4,10 @@ import Gigs from "../components/Gigs";
 
 const Home = () => {
   return (
-    <div>
+    <main className="main">
       <News />
       <Gigs />
-    </div>
+    </main>
   );
 };
 

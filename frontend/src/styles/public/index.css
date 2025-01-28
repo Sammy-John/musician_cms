@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Fraktur+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&display=swap');
+
+
+/* CMS-specific styles */
+/* Root Variables */
+:root {
+    /* Color Palette */
+     /* Backgrounds */
+     --background-dark: #040404; /* Dark background */
+     --background-light: #c8c4ba; /* Light background */
+ 
+     /* Primary and Secondary */
+     --primary-color: #968767; /* Primary (muted gold/taupe) */
+     --secondary-color: #768767; /* Secondary (green equivalent) */
+ 
+     /* Text */
+     --text-color: #5b5852; /* Neutral text */
+     --heading-color: #818281; /* Heading text color */
+     --muted-text: #a4a5a2; /* Muted text for less emphasis */
+ 
+     /* Borders and Shadows */
+     --border-color: rgba(255, 255, 255, 0.1); /* Light border for elements */
+     --shadow-color: grey; /* Shadow for headings and elements */
+ 
+     /* Accents */
+     --accent1: #b0a497; /* Softer neutral for hover effects */
+     --accent2: #5e6656; /* Deeper shade of green for contrast */
+ 
+     /* Additional Suggestions for Depth */
+     --highlight: #d4cfc3; /* Soft highlight for calls-to-action */
+     --dark-accent: #2e2d29; /* Very dark shade for subtle element separation */
+    
+     /* Typography */
+    --font-primary: 'Roboto Slab', serif;
+    --font-secondary: 'Roboto', sans-serif;
+    --font-size-base: 16px;
+    --font-size-large: 42px;
+    --font-size-small: 0.875rem;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 32px;
+    --spacing-xl: 64px;
+
+    /* Border Radius */
+    --border-radius: 8px;
+    --border-radius-circle: 50%;
+
+    /* Shadows */
+    --box-shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --box-shadow-heavy: 0 4px 6px rgba(0, 0, 0, 0.25);
+
+
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Main Content */
+.main {
+    flex: 1; /* Take up remaining space between header and footer */
+    margin: 0 auto; /* Center horizontally */
+    flex-direction: column;
+    gap: var(--spacing-lg); /* Space between News and Gigs */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+h1 {
+    font-family: 'Fraktur One', "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    color: var(--background-light);
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 5px var(--shadow-color);
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+/* Links */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--highlight);
+}
+
+/* Buttons */
+button {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: var(--background-dark);
+    background-color: var(--primary-color);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 2px 2px 5px var(--shadow-color);
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+    box-shadow: 4px 4px 10px var(--shadow-color);
+}
+
+/* Input Fields */
+input, textarea {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: var(--text-color);
+    background-color: var(--dark-accent);
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primary-color);
+}
+
+/* Utility Classes */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 0;
+}
+
+.flex {
+    display: flex;
+    gap: 16px;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shadow {
+    box-shadow: 2px 2px 5px var(--shadow-color);
+}
+
+.rounded {
+    border-radius: 8px;
+}
+
+/* Accent Backgrounds for Depth */
+.accent-bg {
+    background-color: var(--accent2);
+    color: var(--highlight);
+    padding: 16px;
+    border-radius: 4px;
+}
+
+.accent-light {
+    background-color: var(--highlight);
+    color: var(--background-dark);
+    padding: 16px;
+    border-radius: 4px;
+}
+

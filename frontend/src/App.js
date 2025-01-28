@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import NewsPage from "./pages/NewsPage";
-import FullPost from "./components/FullPost";
 import Login from "./cms/Login";
 import CMSLayout from "./cms/CMSLayout";
 import Dashboard from "./cms/pages/Dashboard";
@@ -14,6 +13,12 @@ import Contact from "./cms/Contact";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ImagesPage from "./pages/Images"; // Public image display
+import NewsItemPage from "./pages/NewsItemPage";
+
+// Import styles
+import "./styles/cms/index.css"; // CMS-specific styles
+import "./styles/public/index.css"; // Public site styles
+
 
 function PublicLayout({ children }) {
   return (
@@ -23,6 +28,35 @@ function PublicLayout({ children }) {
       <Footer />
     </>
   );
+}
+
+function useDynamicStylesheet() {
+  const location = useLocation();
+
+  useEffect(() => {
+    let stylesheet;
+
+    if (location.pathname.startsWith("/cms")) {
+      // Load CMS styles
+      stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = "/styles/cms/index.css";
+    } else {
+      // Load Public styles
+      stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = "/styles/public/index.css";
+    }
+
+    document.head.appendChild(stylesheet);
+
+    return () => {
+      // Cleanup stylesheet when component unmounts or route changes
+      if (stylesheet) {
+        document.head.removeChild(stylesheet);
+      }
+    };
+  }, [location.pathname]);
 }
 
 function App() {
@@ -46,6 +80,8 @@ function App() {
 
   return (
     <Router>
+      {/* Call useDynamicStylesheet inside Router */}
+      <DynamicStylesheetProvider />
       <Routes>
         {/* Public Routes */}
         <Route
@@ -68,7 +104,7 @@ function App() {
           path="/news/:id"
           element={
             <PublicLayout>
-              <FullPost />
+              <NewsItemPage />
             </PublicLayout>
           }
         />
@@ -101,6 +137,11 @@ function App() {
       </Routes>
     </Router>
   );
+}
+
+function DynamicStylesheetProvider() {
+  useDynamicStylesheet();
+  return null;
 }
 
 export default App;

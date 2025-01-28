@@ -1,0 +1,64 @@
+/* Header Styles */
+.header {
+    max-width: 1200px; /* Limit header width */
+    margin: 0 auto; /* Center header on the page */
+    padding: 10px;
+    background-color: var(--background-dark); /* Use the global dark background */
+    color: var(--text-color); /* Use global text color */
+    text-align: center; /* Center align content within the header */
+  }
+
+  .header-title-wrapper {
+    text-align: center;
+    border-bottom: 1px solid #ccc; /* Border at the bottom of the title wrapper */
+    margin: 0;
+    padding: 0;
+}
+  
+  .header-title {
+    font-family: 'Fraktur One', "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size: 2.5rem;
+    color: var(--heading-color); /* Global heading color */
+    text-shadow: 2px 2px 5px var(--shadow-color); /* Global shadow */
+    text-decoration: none; /* Remove link-specific styles */
+    text-transform: uppercase; /* Transform text to uppercase */
+    display: inline-block; /* Ensure proper centering for inline content */
+    margin: 0 auto; /* Center title inline within the header */
+  }
+  
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+  }
+  
+  .social-icons {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+  }
+  
+  .nav-links {
+    flex: 2;
+    text-align: center;
+  }
+  
+  .nav-links a {
+    margin: 0 10px;
+    color: white; /* Global primary color */
+    text-decoration: none;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+  
+  .nav-links a:hover {
+    color: var(--secondary-color); /* Global secondary color */
+  }
+  
+  .spacer {
+    flex: 1;
+  }
+  

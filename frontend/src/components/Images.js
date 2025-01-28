@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "../styles/public/components/images.css"; // Import the dedicated CSS file
 
 const SiteImages = () => {
   const [featuredImages, setFeaturedImages] = useState([]);
   const [regularImages, setRegularImages] = useState([]);
+  const [allImages, setAllImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState(null);
+
+  const imagesPerPage = 12; // Number of images per page for all-images
 
   useEffect(() => {
     fetchPublishedImages();
+    fetchAllImages();
   }, []);
 
   const fetchPublishedImages = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/images");
       const publishedImages = response.data;
-
-      console.log("Fetched Published Images:", publishedImages);
 
       const featured = publishedImages.filter((image) => image.type === "feature-image");
       const regular = publishedImages.filter((image) => image.type === "image");
@@ -29,6 +33,17 @@ const SiteImages = () => {
     }
   };
 
+  const fetchAllImages = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/images/cloudinary");
+      setAllImages(response.data); // Use the Cloudinary data directly
+    } catch (err) {
+      console.error("Error fetching all images from Cloudinary:", err);
+      setError("Failed to load all images.");
+    }
+  };
+  
+
   const handleImageClick = (image) => {
     setSelectedImage(image);
   };
@@ -37,15 +52,16 @@ const SiteImages = () => {
     setSelectedImage(null);
   };
 
-  const placeholders = [
-    { id: "placeholder1", url: "https://via.placeholder.com/150", description: "Placeholder 1" },
-    { id: "placeholder2", url: "https://via.placeholder.com/300x300", description: "Placeholder 2" },
+  // Placeholder for `images-grid`
+  const gridPlaceholders = [
+    { id: "placeholder1", url: "https://picsum.photos/150", description: "Placeholder 1" },
+    { id: "placeholder2", url: "https://picsum.photos/300", description: "Placeholder 2" },
   ];
 
   const displayedFeaturedImages = [...featuredImages];
   while (displayedFeaturedImages.length < 2) {
     displayedFeaturedImages.push({
-      ...placeholders[1],
+      ...gridPlaceholders[displayedFeaturedImages.length % gridPlaceholders.length],
       id: `placeholder-featured-${displayedFeaturedImages.length}`,
     });
   }
@@ -53,121 +69,117 @@ const SiteImages = () => {
   const displayedRegularImages = [...regularImages];
   while (displayedRegularImages.length < 4) {
     displayedRegularImages.push({
-      ...placeholders[0],
+      ...gridPlaceholders[displayedRegularImages.length % gridPlaceholders.length],
       id: `placeholder-regular-${displayedRegularImages.length}`,
     });
   }
 
+  // Placeholder logic for `all-images-grid`
+  const paginatedImages = allImages.slice(
+    (currentPage - 1) * imagesPerPage,
+    currentPage * imagesPerPage
+  );
+
+  const displayedPaginatedImages = [...paginatedImages];
+  while (displayedPaginatedImages.length < imagesPerPage) {
+    displayedPaginatedImages.push({ id: `placeholder-${displayedPaginatedImages.length}`, url: null });
+  }
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Photos</h1>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(8, 1fr)",
-          gridTemplateRows: "repeat(2, 1fr)",
-          gap: "5px",
-          marginTop: "20px",
-        }}
-      >
-        <div style={{ gridColumn: "1 / 2", gridRow: "1 / 3" }}>
+    <div className="images-container">
+      <h2 className="images-title">Photos</h2>
+      <div className="images-grid">
+        {/* Original images-grid */}
+        <div className="images-regular images-left">
           {displayedRegularImages.slice(0, 2).map((image) => (
             <div
               key={image.id}
-              style={{ marginBottom: "5px", position: "relative" }}
+              className="image-wrapper"
               onClick={() => handleImageClick(image)}
             >
-              <img
-                src={image.url}
-                alt={image.description}
-                style={{ width: "100%", cursor: "pointer" }}
-              />
+              <img src={image.url} alt={image.description} className="image" />
             </div>
           ))}
         </div>
 
         <div
-          style={{
-            gridColumn: "2 / 4",
-            gridRow: "1 / 3",
-            position: "relative",
-          }}
+          className="images-featured images-featured-left"
           onClick={() => handleImageClick(displayedFeaturedImages[0])}
         >
           <img
-            src={displayedFeaturedImages[0].url}
-            alt={displayedFeaturedImages[0].description}
-            style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
+            src={displayedFeaturedImages[0]?.url || ""}
+            alt={displayedFeaturedImages[0]?.description || "Placeholder"}
+            className="image featured"
           />
         </div>
 
         <div
-          style={{
-            gridColumn: "4 / 6",
-            gridRow: "1 / 3",
-            position: "relative",
-          }}
+          className="images-featured images-featured-right"
           onClick={() => handleImageClick(displayedFeaturedImages[1])}
         >
           <img
-            src={displayedFeaturedImages[1].url}
-            alt={displayedFeaturedImages[1].description}
-            style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
+            src={displayedFeaturedImages[1]?.url || ""}
+            alt={displayedFeaturedImages[1]?.description || "Placeholder"}
+            className="image featured"
           />
         </div>
 
-        <div style={{ gridColumn: "6 / 7", gridRow: "1 / 3" }}>
+        <div className="images-regular images-right">
           {displayedRegularImages.slice(2, 4).map((image) => (
             <div
               key={image.id}
-              style={{ marginBottom: "5px", position: "relative" }}
+              className="image-wrapper"
               onClick={() => handleImageClick(image)}
             >
-              <img
-                src={image.url}
-                alt={image.description}
-                style={{ width: "100%", cursor: "pointer" }}
-              />
+              <img src={image.url} alt={image.description} className="image" />
             </div>
           ))}
         </div>
       </div>
 
+      {/* New all-images section */}
+      <div className="all-images-container">
+        <h3 className="all-images-title">All Photos</h3>
+        <div className="all-images-grid">
+          {displayedPaginatedImages.map((image, index) => (
+            <div
+              key={index}
+              className="all-images-wrapper"
+              onClick={image.url ? () => handleImageClick(image) : null}
+            >
+              {image.url ? (
+                <img src={image.url} alt="Image" className="all-images-image" />
+              ) : (
+                <div className="all-images-placeholder"></div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {allImages.length > imagesPerPage && (
+          <div className="all-images-pagination">
+            {Array.from({ length: Math.ceil(allImages.length / imagesPerPage) }).map((_, index) => (
+              <button
+                key={index}
+                className={`pagination-button ${currentPage === index + 1 ? "active" : ""}`}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       {selectedImage && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.8)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div style={{ position: "relative", maxWidth: "90%", maxHeight: "90%" }}>
+        <div className="modal">
+          <div className="modal-content">
             <img
               src={selectedImage.url}
               alt={selectedImage.description}
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              className="modal-image"
             />
-            <button
-              onClick={handleClose}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "red",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                padding: "5px 10px",
-                cursor: "pointer",
-              }}
-            >
+            <button onClick={handleClose} className="modal-close-button">
               Close
             </button>
           </div>

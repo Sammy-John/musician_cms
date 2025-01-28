@@ -1,0 +1,187 @@
+/* Container */
+.newslist-container {
+    padding: 20px;
+    background-color: white;
+    height: 100vh;
+  }
+  
+/* Date Styling */
+.newslist-date {
+    display: flex;
+    align-items: center;
+    color: var(--muted-text);
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  .newslist-date .calendar-icon {
+    margin-right: 8px;
+    color: var(--secondary-color);
+    font-size: 16px;
+  }
+  
+  
+  /* Title */
+  .newslist-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text-color);
+  }
+  
+  /* Post Styling */
+  .newslist-post {
+    display: flex;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+  
+  .newslist-image {
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .newslist-image img {
+    width: 100%; /* Ensure the image fills the width of its container */
+    height: 300px; /* Set a fixed height to maintain uniformity */
+    object-fit: cover; /* Ensures the image scales without distortion */
+  }
+  
+  .newslist-content {
+    flex: 2;
+    position: relative; /* For positioning "Read More" at the bottom */
+  }
+  
+  .newslist-date {
+    display: flex;
+    align-items: center;
+    color: var(--muted-text);
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  .newslist-date .calendar-icon {
+    margin-right: 8px;
+    color: var(--secondary-color);
+  }
+  
+  .newslist-post-title {
+    margin: 10px 0;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+  }
+  
+  .newslist-description {
+    margin: 10px 0;
+    color: var(--text-color);
+  }
+  
+  .newslist-read-more {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-decoration: none;
+    color: var(--secondary-color);
+    font-weight: bold;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+  }
+  
+  .newslist-read-more::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: var(--secondary-color);
+    transition: width 0.3s ease;
+  }
+  
+  .newslist-read-more:hover::after {
+    width: 100%;
+  }
+  
+  .newslist-read-more:hover {
+    text-decoration: none; /* No underline on hover */
+    cursor: pointer;
+  }
+  
+  /* Pagination */
+ /* Pagination Container */
+.newslist-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  /* Pages Section - Centered */
+  .newslist-pages {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  
+  /* Page Buttons */
+  .newslist-page-button {
+    margin: 0 5px;
+    color: var(--muted-text); /* Default muted text color */
+    font-size: 14px;
+    font-weight: normal;
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  /* Active Page */
+  .newslist-page-button.active {
+    color: var(--primary-color); /* Primary color for active page */
+    font-weight: bold; /* Make active text bold */
+    cursor: default; /* Prevent hover/interaction */
+    pointer-events: none; /* Disable hover effects */
+  }
+  
+  /* Hoverable Inactive Pages */
+  .newslist-page-button:hover:not(.active) {
+    color: var(--secondary-color); /* Change to secondary color on hover */
+  }
+  
+  /* Next Button Section */
+  .newslist-next-button {
+    display: inline-flex; /* Ensure text and arrow are inline */
+    align-items: center;
+    font-size: 14px;
+    color: var(--muted-text); /* Default muted text */
+    font-weight: normal;
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  /* Hover for Next Button */
+.newslist-next-button:hover:not(.disabled) {
+    color: var(--secondary-color); /* Change text color to secondary */
+    background: none; /* Remove background color */
+    border: none; /* Ensure no border appears */
+    box-shadow: none; /* Remove any shadow effect */
+  }
+  
+  /* Disabled Next Button */
+  .newslist-next-button.disabled {
+    color: var(--secondary-color); /* Change text color to secondary */
+    background: none; /* Remove background color */
+    border: none; /* Ensure no border appears */
+    box-shadow: none; /* Remove any shadow effect */
+    cursor: not-allowed; /* Prevent interaction */
+  }
+  
+  /* Arrow Styling */
+  .newslist-next-arrow {
+    margin-left: 5px; /* Add spacing between text and arrow */
+    font-size: 14px;
+    color: inherit; /* Inherit color from the text */
+    transition: color 0.3s ease;
+  }
+  

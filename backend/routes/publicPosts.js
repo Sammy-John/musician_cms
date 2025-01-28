@@ -21,5 +21,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Fetch a specific post by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findOne({
+      where: { id, status: "published" }, // Ensure the post is published
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json(post.dataValues);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
+
 
 module.exports = router;

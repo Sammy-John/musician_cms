@@ -12,33 +12,31 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-primary text-white border-b shadow-md">
-      <div className="container mx-auto px-4 flex justify-between items-center py-3">
+    <nav className="navbar">
+      <div className="navbar-container">
         {/* Logo */}
-        <h1 className="text-lg font-bold text-secondary-light tracking-wide">
-          CMS
-        </h1>
+        <h1 className="navbar-logo">CMS</h1>
 
         {/* Hamburger Menu for Mobile */}
         <button
-          className="text-neutral-light focus:outline-none md:hidden flex flex-col gap-1"
+          className="navbar-toggle"
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className="sr-only">Toggle Menu</span>
           {/* Burger Menu */}
           <div
-            className={`h-1 w-6 bg-white transition-transform ${
-              isOpen ? "rotate-45 translate-y-2" : ""
+            className={`navbar-toggle-bar ${
+              isOpen ? "navbar-toggle-bar-open" : ""
             }`}
           ></div>
           <div
-            className={`h-1 w-6 bg-white transition-opacity ${
-              isOpen ? "opacity-0" : "opacity-100"
+            className={`navbar-toggle-bar ${
+              isOpen ? "navbar-toggle-bar-hidden" : ""
             }`}
           ></div>
           <div
-            className={`h-1 w-6 bg-white transition-transform ${
-              isOpen ? "-rotate-45 -translate-y-2" : ""
+            className={`navbar-toggle-bar ${
+              isOpen ? "navbar-toggle-bar-close" : ""
             }`}
           ></div>
         </button>
@@ -46,18 +44,17 @@ const Navbar = () => {
         {/* Navbar Links */}
         <ul
           className={`${
-            isOpen
-              ? "flex flex-col items-center justify-center h-screen bg-primary w-full absolute top-0 left-0 z-50"
-              : "hidden"
-          } md:flex md:items-center md:gap-6 md:space-y-0 space-y-4`}
+            isOpen ? "navbar-links-mobile" : "navbar-links"
+          }`}
           onClick={() => setIsOpen(false)} // Close menu when a link is clicked
         >
           {/* Links */}
           <li>
             <NavLink
               to="/cms/pages/dashboard"
-              className="block py-2 px-4 text-white hover:bg-secondary-light rounded transition-colors text-center"
-              activeClassName="bg-secondary text-white"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "navbar-link-active" : ""}`
+              }
             >
               Dashboard
             </NavLink>
@@ -65,8 +62,9 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/cms/posts"
-              className="block py-2 px-4 text-white hover:bg-secondary-light rounded transition-colors text-center"
-              activeClassName="bg-secondary text-white"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "navbar-link-active" : ""}`
+              }
             >
               Posts
             </NavLink>
@@ -74,8 +72,9 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/cms/gigs"
-              className="block py-2 px-4 text-white hover:bg-secondary-light rounded transition-colors text-center"
-              activeClassName="bg-secondary text-white"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "navbar-link-active" : ""}`
+              }
             >
               Gigs
             </NavLink>
@@ -83,8 +82,9 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/cms/images"
-              className="block py-2 px-4 text-white hover:bg-secondary-light rounded transition-colors text-center"
-              activeClassName="bg-secondary text-white"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "navbar-link-active" : ""}`
+              }
             >
               Images
             </NavLink>
@@ -92,8 +92,9 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/cms/videos"
-              className="block py-2 px-4 text-white hover:bg-secondary-light rounded transition-colors text-center"
-              activeClassName="bg-secondary text-white"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "navbar-link-active" : ""}`
+              }
             >
               Videos
             </NavLink>
@@ -101,8 +102,9 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/cms/contact"
-              className="block py-2 px-4 text-white hover:bg-secondary-light rounded transition-colors text-center"
-              activeClassName="bg-secondary text-white"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "navbar-link-active" : ""}`
+              }
             >
               Contact Submissions
             </NavLink>
@@ -110,7 +112,7 @@ const Navbar = () => {
           <li>
             <button
               onClick={handleLogout}
-              className="block py-2 px-4 bg-accent-red text-white hover:bg-accent-cyan rounded transition-colors text-center"
+              className="navbar-logout"
             >
               Logout
             </button>

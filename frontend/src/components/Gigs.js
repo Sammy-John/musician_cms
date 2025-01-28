@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "../styles/public/components/gigs.css"; // Import CSS for Gigs component
 
 const Gigs = () => {
   const [gigs, setGigs] = useState([]); // Store fetched gigs data
@@ -21,10 +22,15 @@ const Gigs = () => {
     fetchGigs();
   }, []);
 
-  if (error) {
-    return <p style={{ color: "red" }}>{error}</p>; // Display error message if any
-  }
-
+  // Helper function to format date with bullet points
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0'); // Ensure 2-digit day
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+    const year = date.getFullYear();
+    return `${day} • ${month} • ${year}`; // Combine with bullet points
+  };
+  
   // Helper function to format time
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":");
@@ -36,65 +42,61 @@ const Gigs = () => {
   // Function to handle ticketInfo display
   const renderTicketInfo = (ticketInfo) => {
     if (!ticketInfo || ticketInfo === "Free") {
-      // If ticketInfo is missing or explicitly "Free", display "Free"
       return <span>Free</span>;
     }
     if (typeof ticketInfo === "object" && ticketInfo.link) {
-      // Display link and price for paid tickets
       return (
         <a
           href={ticketInfo.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 underline"
+          className="gig-ticket-link"
         >
           Buy Tickets - £{ticketInfo.price}
         </a>
       );
     }
-    // Default fallback if ticketInfo is invalid
     return <span>Free</span>;
   };
-  
+
+  if (error) {
+    return <p className="gig-error">{error}</p>;
+  }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Gig Dates</h1>
-      <h2>Upcoming Dates</h2>
-      <div style={{ marginTop: "20px" }}>
+    <div className="gigs-container">
+      <h2 className="gigs-heading">Upcoming Dates</h2>
+      <div className="gigs-list">
         {gigs.length > 0 ? (
           gigs.map((gig) => (
-            <div
-              key={gig.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1px solid #ccc",
-                padding: "10px 0",
-              }}
-            >
+            <div className="gig-item" key={gig.id}>
               {/* Date */}
-              <div style={{ flex: 1, fontWeight: "bold" }}>
-                {new Date(gig.date).toLocaleDateString()}
-              </div>
+              <div className="gig-date">{formatDate(gig.date)}</div>
 
               {/* Venue and Location */}
-              <div style={{ flex: 3 }}>
-                <div>{gig.venue}</div>
-                <div>{gig.location}</div>
+              <div className="gig-details">
+                <div className="gig-venue">{gig.venue}</div>
+                <div className="gig-location">{gig.location}</div>
               </div>
 
               {/* Time and Tickets */}
-              <div style={{ flex: 2, textAlign: "right" }}>
-                <div>{formatTime(gig.time)}</div>
-                <div>
-                  <strong>Ticket Info:</strong> {renderTicketInfo(gig.ticketInfo)}
+              <div className="gig-meta">
+                {/* Time */}
+                <div className="gig-time">
+                  {formatTime(gig.time)}
+                </div>
+
+                {/* Ticket Info */}
+                <div className="gig-ticket-info">
+                  {renderTicketInfo(gig.ticketInfo)}
                 </div>
               </div>
+
+
             </div>
           ))
         ) : (
-          <p>No gigs available at the moment.</p>
+          <p className="gig-empty">No gigs available at the moment.</p>
         )}
       </div>
     </div>

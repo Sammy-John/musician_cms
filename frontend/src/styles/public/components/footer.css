@@ -1,0 +1,45 @@
+/* Footer Styles */
+.footer {
+    position: fixed; /* Fix footer to the bottom */
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    padding: 10px 20px;
+    border-top: 1px solid var(--border-color); /* Border for separation */
+    background-color: var(--background-dark); /* Footer background */
+    color: var(--text-color); /* Footer text color */
+    text-align: center;
+    font-size: 14px;
+    z-index: 10; /* Ensure it stays above other elements */
+}
+
+/* Footer Container */
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px; /* Limit content width */
+    margin: 0 auto; /* Center content */
+}
+
+/* Footer Links */
+.footer-links {
+    display: flex;
+    gap: 15px; /* Space between links */
+}
+
+.footer-link {
+    text-decoration: none; /* Remove underline */
+    color: var(--text-color); /* Match text color */
+    transition: color 0.3s ease; /* Smooth hover effect */
+}
+
+.footer-link:hover {
+    color: var(--primary-color); /* Change color on hover */
+}
+
+/* Copyright Section */
+.footer-copyright {
+    font-size: 12px; /* Slightly smaller font for copyright */
+    color: var(--muted-text); /* Muted color */
+}
