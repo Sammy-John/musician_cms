@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Header from "../components/Header"; // Adjust the import path based on your folder structure
+import "../styles/public/components/newsitempage.css"; // Import CSS
 
 const NewsItemPage = () => {
   const { id } = useParams(); // Get the post ID from the route parameters
@@ -25,7 +25,6 @@ const NewsItemPage = () => {
   if (error) {
     return (
       <div>
-        <Header />
         <p className="news-error">{error}</p>
       </div>
     );
@@ -34,25 +33,35 @@ const NewsItemPage = () => {
   if (!newsItem) {
     return (
       <div>
-        <Header />
         <p className="news-loading">Loading news item...</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <Header />
+    <div className="news-item-container">
       <div className="news-item-page">
-        <h1 className="news-item-title">{newsItem.title}</h1>
-        {newsItem.content && <div className="news-item-content">{newsItem.content}</div>}
-        {newsItem.image && <img src={newsItem.image} alt={newsItem.title} className="news-item-image" />}
-        <button
-          className="news-back-button"
-          onClick={() => window.history.back()}
-        >
-          Back to News
-        </button>
+        {/* Image Section */}
+        <div className="news-item-image-container">
+          <img
+            src={newsItem.image || "https://picsum.photos/400"}
+            alt={newsItem.title || "News Item"}
+            className="news-item-image"
+          />
+        </div>
+
+        {/* Article Section */}
+        <article className="news-item-article">
+          <div className="news-item-date">
+            <i className="calendar-icon" /> {new Date(newsItem.createdAt).toLocaleString('default', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            })}
+          </div>
+          <h2 className="news-item-title">{newsItem.title}</h2>
+          <p className="news-item-content">{newsItem.content}</p>
+        </article>
       </div>
     </div>
   );

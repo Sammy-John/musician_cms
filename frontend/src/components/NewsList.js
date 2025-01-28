@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { FaCalendarAlt } from "react-icons/fa"; // Calendar Icon
+import "../styles/public/components/newslist.css"; // Import the dedicated stylesheet
 
 const NewsList = () => {
   const [newsPosts, setNewsPosts] = useState([]); // Store fetched posts
@@ -7,7 +10,6 @@ const NewsList = () => {
   const [postsPerPage] = useState(5); // Posts per page
   const [error, setError] = useState(null); // Error handling
 
-  // Fetch news posts from the API
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -23,7 +25,6 @@ const NewsList = () => {
     fetchNews();
   }, []);
 
-  // Pagination logic
   const totalPages = Math.ceil(newsPosts.length / postsPerPage);
   const currentPosts = newsPosts.slice(
     (currentPage - 1) * postsPerPage,
@@ -38,99 +39,74 @@ const NewsList = () => {
     setCurrentPage(page);
   };
 
+  const formatDate = (dateString) => {
+    const options = { month: "long", day: "numeric", year: "numeric" };
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", options).replace(",", " •");
+  };
+
   if (error) {
-    return <p style={{ color: "red" }}>{error}</p>; // Display error message
+    return <p className="newslist-error">{error}</p>;
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>News</h1>
-      {/* Render Current Posts */}
+    <div className="newslist-container">
+      <h1 className="newslist-title">News</h1>
       {currentPosts.map((post) => (
-        <div
-          key={post.id}
-          style={{
-            display: "flex",
-            marginBottom: "20px",
-            borderBottom: "1px solid #ccc",
-            paddingBottom: "10px",
-          }}
-        >
-          <div style={{ flex: 1, marginRight: "20px" }}>
+        <div key={post.id} className="newslist-post">
+          <div className="newslist-image">
             <img
-              src={post.image || "https://via.placeholder.com/150"}
+              src={post.image || "https://picsum.photos/300"}
               alt={post.title || "No Title"}
-              style={{ width: "100%" }}
             />
           </div>
-          <div style={{ flex: 2 }}>
-            <span style={{ display: "block", color: "gray", marginBottom: "10px" }}>
-              {new Date(post.createdAt).toLocaleDateString()}
+          <div className="newslist-content">
+            <span className="newslist-date">
+              <FaCalendarAlt className="calendar-icon" /> {formatDate(post.createdAt)}
             </span>
-            <h2 style={{ margin: "10px 0" }}>{post.title || "No Title"}</h2>
-            <p style={{ margin: "10px 0" }}>
+            <h2 className="newslist-post-title">{post.title || "No Title"}</h2>
+            <p className="newslist-description">
               {post.description || "No description available."}
             </p>
-            {post.link && (
-              <a
-                href={post.link}
-                style={{ textDecoration: "none", color: "blue" }}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Read More
-              </a>
-            )}
+            <Link to={`/news/${post.id}`} className="newslist-read-more">
+              Read More
+            </Link>
           </div>
         </div>
       ))}
 
-      {/* Pagination Section */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: "20px",
-        }}
-      >
-        {/* Page Numbers */}
-        <div>
+      <div className="newslist-pagination">
+        {/* Page Numbers - Centered */}
+        <div className="newslist-pages">
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i + 1}
               onClick={() => handlePageClick(i + 1)}
-              style={{
-                padding: "5px 10px",
-                marginRight: "5px",
-                backgroundColor: currentPage === i + 1 ? "#ccc" : "#fff",
-                border: "1px solid #ccc",
-                cursor: "pointer",
-              }}
+              className={`newslist-page-button ${
+                currentPage === i + 1 ? "active" : ""
+              }`}
             >
               {i + 1}
             </button>
           ))}
         </div>
 
-        {/* Next Button */}
+        {/* Next Button - Aligned Right */}
         <button
           onClick={handleNextPage}
-          style={{
-            padding: "5px 10px",
-            backgroundColor: currentPage < totalPages ? "#fff" : "#eee",
-            color: currentPage < totalPages ? "#000" : "#888",
-            border: "1px solid #ccc",
-            cursor: currentPage < totalPages ? "pointer" : "not-allowed",
-          }}
+          className={`newslist-next-button ${
+            currentPage >= totalPages ? "disabled" : ""
+          }`}
           disabled={currentPage >= totalPages}
         >
-          Next &gt;
+          Next Page
+          <span className="newslist-next-arrow">&rarr;</span>
         </button>
       </div>
+
+
     </div>
   );
 };
 
 export default NewsList;
-

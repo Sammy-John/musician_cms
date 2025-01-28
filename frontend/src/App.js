@@ -100,8 +100,14 @@ function App() {
             </PublicLayout>
           }
         />
-        <Route path="/news/:id" element={<NewsItemPage />} />
-      
+        <Route
+          path="/news/:id"
+          element={
+            <PublicLayout>
+              <NewsItemPage />
+            </PublicLayout>
+          }
+        />
         <Route
           path="/images"
           element={

@@ -61,7 +61,7 @@ const News = () => {
           {slides.map((slide, index) => (
             <div key={index} className="news-slide">
               <h2 className="news-title">{slide.title || "No Title"}</h2>
-              <p className="news-description">{slide.description || "No description available."}</p>
+              <p className="news-description">{slide.summary || "No description available."}</p>
               <Link to={`/news/${slide.id}`} className="news-link">
                 Read More
               </Link>
