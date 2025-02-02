@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { sequelize } = require("./models"); // Import Sequelize instance
 const authenticateToken = require("./middleware/authMiddleware");
+const ngrok = require('@ngrok/ngrok');
 
 // Debugging Database Connection
 console.log("Database Host:", process.env.DB_HOST);
@@ -23,6 +24,20 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+
+// Require ngrok javascript sdk
+const ngrok = require("@ngrok/ngrok");
+// import ngrok from '@ngrok/ngrok' // if inside a module
+
+(async function() {
+  // Establish connectivity
+  const listener = await ngrok.forward({ addr: 8080, authtoken_from_env: true });
+
+  // Output ngrok url to console
+  console.log(`Ingress established at: ${listener.url()}`);
+})();
+
+process.stdin.resume();
 
 // ✅ Configure CORS
 app.use(cors({
