@@ -10,10 +10,10 @@ console.log("Database Name:", process.env.DB_NAME);
 
 // Import Routes
 const authRoutes = require("./routes/auth");
-const postRoutes = require("./routes/posts"); // CMS protected posts
-const publicPostRoutes = require("./routes/publicPosts"); // Public posts route
+const postRoutes = require("./routes/posts");
+const publicPostRoutes = require("./routes/publicPosts");
 const gigRoutes = require("./routes/gigs");
-const publicGigRoutes = require("./routes/publicGigs"); // Public gigs route
+const publicGigRoutes = require("./routes/publicGigs");
 const imageRoutes = require("./routes/images");
 const videoRoutes = require("./routes/videos");
 const contactRoutes = require("./routes/contact");
@@ -23,7 +23,17 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+// ✅ Configure CORS
+app.use(cors({
+  origin: [
+    "http://localhost:3000", // Local frontend for development
+    "https://musician-cms.vercel.app" // Deployed frontend on Vercel
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 // Test Database Connection on Startup
 sequelize
@@ -37,14 +47,14 @@ sequelize
 
 // Public Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/public-posts", publicPostRoutes); // Mount the publicPosts route
-app.use("/api/public-gigs", publicGigRoutes); // Public gigs route
-app.use("/api/images", imageRoutes); // Public image routes
+app.use("/api/public-posts", publicPostRoutes);
+app.use("/api/public-gigs", publicGigRoutes);
+app.use("/api/images", imageRoutes);
 
 // Protected Routes (Requires Authentication)
 app.use("/api/posts", authenticateToken, postRoutes);
 app.use("/api/gigs", authenticateToken, gigRoutes);
-app.use("/api/images/protected", authenticateToken, imageRoutes); // Protected image routes
+app.use("/api/images/protected", authenticateToken, imageRoutes);
 app.use("/api/videos", authenticateToken, videoRoutes);
 app.use("/api/contact", authenticateToken, contactRoutes);
 
